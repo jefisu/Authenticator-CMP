@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Authenticator</string>
+
+    <!--  QR Scanner  -->
+    <string name="point_camera_at_qr_code">Point your camera at the QR code.</string>
+    <string name="cant_scan_qr_code">Can\'t scan QR code.</string>
+    <string name="enter_key_manually">Enter key manually</string>
+    <string name="invalid_qr_code">Invalid QR code</string>
+    <string name="scan_qr_code">Scan QR Code</string>
+
+    <!-- Error -->
+    <string name="exist_account">Account already exists.</string>
+
+</resources>
