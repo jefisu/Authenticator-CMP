@@ -6,4 +6,7 @@ sealed interface Destination {
 
     @Serializable
     data object TotpScreen : Destination
+
+    @Serializable
+    data object QrScannerScreen : Destination
 }

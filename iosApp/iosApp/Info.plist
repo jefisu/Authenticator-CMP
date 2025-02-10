@@ -46,5 +46,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	<key>NSCameraUsageDescription</key>
+    <string>This app requires access to the camera to scan QR codes.</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app requires access to your photos to upload or save images.</string>
 </dict>
 </plist>

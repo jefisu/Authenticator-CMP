@@ -8,6 +8,11 @@
     <string name="invalid_qr_code">Invalid QR code</string>
     <string name="scan_qr_code">Scan QR Code</string>
 
+    <!--  Permission   -->
+    <string name="open_settings">Open settings</string>
+    <string name="enable_camera">Enable Camera</string>
+    <string name="enable_camera_permission">Please enable camera permission to scan QR codes</string>
+
     <!-- Error -->
     <string name="exist_account">Account already exists.</string>
 

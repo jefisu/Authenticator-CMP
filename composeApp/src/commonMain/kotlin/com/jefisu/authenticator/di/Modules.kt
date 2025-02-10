@@ -8,6 +8,7 @@ import com.jefisu.authenticator.domain.usecase.AddAccountUseCase
 import com.jefisu.authenticator.domain.usecase.GenerateTotpUseCase
 import com.jefisu.authenticator.domain.usecase.GetAllAccountsUseCase
 import com.jefisu.authenticator.domain.usecase.UseCases
+import com.jefisu.authenticator.presentation.qrscanner.QrScannerViewModel
 import com.jefisu.authenticator.presentation.totp.TotpViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -24,4 +25,5 @@ val sharedModule = module {
     singleOf(::UseCases)
 
     viewModelOf(::TotpViewModel)
+    viewModelOf(::QrScannerViewModel)
 }

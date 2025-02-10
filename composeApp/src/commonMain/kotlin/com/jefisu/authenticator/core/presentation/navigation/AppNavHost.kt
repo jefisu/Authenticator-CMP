@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jefisu.authenticator.core.presentation.sharedtransition.LocalAnimatedContentScope
+import com.jefisu.authenticator.presentation.qrscanner.QrScannerScreen
 import com.jefisu.authenticator.presentation.totp.TotpScreen
 
 @Composable
@@ -23,8 +24,16 @@ fun AppNavHost() {
         composable<Destination.TotpScreen> {
             ProvideAnimatedContentScope {
                 TotpScreen(
-                    onNavigateQrScanner = {},
+                    onNavigateQrScanner = { navController.navigate(Destination.QrScannerScreen) },
                     onNavigateEnterKeyManually = {}
+                )
+            }
+        }
+        composable<Destination.QrScannerScreen> {
+            ProvideAnimatedContentScope {
+                QrScannerScreen(
+                    onNavigateBack = navController::navigateUp,
+                    onNavigateToEnterKeyManually = {}
                 )
             }
         }
