@@ -13,7 +13,7 @@ class TotpServiceImpl : TotpService {
             hmacKey = account.secret.encodeToByteArray(),
             period = account.refreshPeriod,
             codeLength = account.digitCount,
-            issuer = account.issuer.identifier,
+            issuer = account.issuer?.identifier.orEmpty(),
             accountName = account.login
         )
     }

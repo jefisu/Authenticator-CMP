@@ -16,4 +16,21 @@
     <!-- Error -->
     <string name="exist_account">Account already exists.</string>
 
+    <!-- Add Key Manually  -->
+    <string name="new_account">New account</string>
+    <string name="login">Login</string>
+    <string name="account_name">Account name</string>
+    <string name="secret_key">Secret key</string>
+    <string name="service_not_selected">Service not selected</string>
+    <string name="change_standard_settings">Change standard settings</string>
+    <string name="we_dont_recommend_change">We don't recommend changing standard settings for refresh time, digits or algorithm.</string>
+    <string name="think_twice_before_change">Think twice before changing these settings. You could lock yourself out.</string>
+    <string name="search_service">Search service</string>
+    <string name="cancel">Cancel</string>
+    <string name="algorithm">Algorithm</string>
+    <string name="refresh_period">Refresh period</string>
+    <string name="digits">Digits</string>
+    <string name="seconds">Seconds</string>
+    <string name="not_defined">Not defined</string>
+
 </resources>

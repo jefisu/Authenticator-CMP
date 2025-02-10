@@ -25,8 +25,7 @@ enum class DefaultIssuer(
     DIGG("https://digg.com/", "Digg");
 
     companion object {
-        fun getIssuer(identifier: String): Issuer = entries
-            .find { it.identifier.contains(identifier, ignoreCase = true) }
-            ?: CustomIssuer(identifier, "")
+        fun getIssuer(identifier: String): Issuer? = entries
+            .find { identifier.contains(it.identifier, ignoreCase = true) }
     }
 }

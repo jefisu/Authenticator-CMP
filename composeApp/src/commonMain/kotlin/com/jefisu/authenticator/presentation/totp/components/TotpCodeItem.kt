@@ -5,6 +5,7 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -41,12 +42,17 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import authenticator.composeapp.generated.resources.Res
+import authenticator.composeapp.generated.resources.ic_authentication_logo
+import authenticator.composeapp.generated.resources.not_defined
 import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
 import com.jefisu.authenticator.core.presentation.theme.colors
 import com.jefisu.authenticator.core.util.TotpConstants
 import com.jefisu.authenticator.domain.model.Account
 import com.jefisu.authenticator.presentation.util.getLogoUrl
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TotpCodeItem(
@@ -125,11 +131,18 @@ private fun ServiceIcon(
             AsyncImage(null, null, imageModifier)
         } else {
             SubcomposeAsyncImage(
-                model = getLogoUrl(account.issuer.url),
+                model = account.issuer?.url?.let(::getLogoUrl),
                 contentDescription = null,
                 modifier = imageModifier,
                 loading = {
                     CircularProgressIndicator()
+                },
+                error = {
+                    Image(
+                        painter = painterResource(Res.drawable.ic_authentication_logo),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             )
         }
@@ -143,7 +156,7 @@ private fun AccountInfo(
 ) {
     Column(modifier) {
         Text(
-            text = account.issuer.identifier,
+            text = account.issuer?.identifier ?: stringResource(Res.string.not_defined),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colors.textColor
         )
