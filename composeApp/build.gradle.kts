@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -27,6 +28,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            linkerOpts.add("-lsqlite3")
         }
     }
 
@@ -73,6 +75,8 @@ kotlin {
                 implementation(libs.composables.core)
                 implementation(libs.arrow.optics.compose)
                 implementation(libs.calf.file.picker)
+                implementation(libs.androidx.sqlite.bundled)
+                implementation(libs.androidx.room.runtime)
             }
         }
         commonTest.dependencies {
@@ -117,6 +121,9 @@ dependencies {
     debugImplementation(compose.uiTooling)
 
     kspCommonMainMetadata(libs.arrow.optics.ksp)
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
 }
 
 ktlint {
@@ -130,4 +137,8 @@ tasks.withType<KotlinCompile>().all {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }

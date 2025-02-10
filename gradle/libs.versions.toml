@@ -24,6 +24,8 @@ composablesCore = "1.20.0"
 kstore = "0.9.1"
 ksp = "2.1.10-1.0.29"
 arrow = "2.0.1"
+androidx-room = "2.7.0-alpha13"
+androidx-sqlite = "2.5.0-SNAPSHOT"
 
 [libraries]
 androidx-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -55,6 +57,9 @@ calf-file-picker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.
 composables-core = { module = "com.composables:core", version.ref = "composablesCore" }
 arrow-optics-ksp = { module = "io.arrow-kt:arrow-optics-ksp-plugin", version.ref = "arrow" }
 arrow-optics-compose = { module = "io.arrow-kt:arrow-optics-compose", version.ref = "arrow" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "androidx-sqlite" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -65,3 +70,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "androidx-room" }

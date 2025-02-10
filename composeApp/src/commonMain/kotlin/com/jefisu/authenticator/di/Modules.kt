@@ -2,6 +2,7 @@ package com.jefisu.authenticator.di
 
 import com.jefisu.authenticator.data.AccountRepositoryImpl
 import com.jefisu.authenticator.data.TotpServiceImpl
+import com.jefisu.authenticator.data.database.getAccountDatabase
 import com.jefisu.authenticator.domain.repository.AccountRepository
 import com.jefisu.authenticator.domain.service.TotpService
 import com.jefisu.authenticator.domain.usecase.AddAccountUseCase
@@ -17,6 +18,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val sharedModule = module {
+    singleOf(::getAccountDatabase)
     singleOf(::AccountRepositoryImpl).bind<AccountRepository>()
     singleOf(::TotpServiceImpl).bind<TotpService>()
 
