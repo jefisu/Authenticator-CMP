@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.jefisu.authenticator.presentation.totp
 
 import androidx.lifecycle.ViewModel
@@ -8,11 +10,16 @@ import com.jefisu.authenticator.domain.usecase.UseCases
 import com.jefisu.authenticator.domain.util.onError
 import com.jefisu.authenticator.domain.util.onSuccess
 import com.jefisu.authenticator.presentation.util.asUiText
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -63,20 +70,28 @@ class TotpViewModel(
     }
 
     private fun refreshTotpCode() {
-        flow {
-            while (true) {
-                emit(Unit)
-                delay(1_000L)
-            }
-        }.onEach {
-            _state.update { state ->
-                TotpState.timeUntilTotpRefresh.modify(state) { currentTime ->
-                    val time = currentTime - 1
-                    if (time > 0) return@modify time
-                    REFRESH_INTERVAL.also { generateTotpCode() }
+        _state
+            .map { it.totpAccounts.isNotEmpty() }
+            .distinctUntilChanged()
+            .flatMapLatest { hasAccounts ->
+                if (!hasAccounts) emptyFlow<Unit>()
+                flow {
+                    while (true) {
+                        emit(Unit)
+                        delay(1_000L)
+                    }
                 }
             }
-        }.launchIn(viewModelScope)
+            .onEach {
+                _state.update { state ->
+                    TotpState.timeUntilTotpRefresh.modify(state) { remainingTime ->
+                        if (remainingTime > 0) return@modify remainingTime - 1
+                        generateTotpCode()
+                        REFRESH_INTERVAL
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun addAccount(totpUri: String) {
