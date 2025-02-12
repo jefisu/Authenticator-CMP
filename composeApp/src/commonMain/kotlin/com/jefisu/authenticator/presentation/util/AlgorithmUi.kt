@@ -1,13 +1,12 @@
 package com.jefisu.authenticator.presentation.util
 
-import diglol.crypto.Hmac
+import com.jefisu.authenticator.domain.model.Algorithm
 
-fun Hmac.Type.displayName(): String {
+fun Algorithm.displayName(): String {
     return when (this) {
-        Hmac.Type.SHA1 -> "SHA1"
-        Hmac.Type.SHA256 -> "SHA256"
-        Hmac.Type.SHA384 -> "SHA384"
-        Hmac.Type.SHA512 -> "SHA512"
-        else -> throw IllegalArgumentException("Invalid Hmac type")
+        Algorithm.SHA1 -> "SHA1"
+        Algorithm.SHA256 -> "SHA256"
+        Algorithm.SHA384 -> "SHA384"
+        Algorithm.SHA512 -> "SHA512"
     }
 }

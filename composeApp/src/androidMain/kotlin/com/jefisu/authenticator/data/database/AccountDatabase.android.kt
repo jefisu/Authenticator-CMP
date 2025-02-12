@@ -2,7 +2,6 @@ package com.jefisu.authenticator.data.database
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.jefisu.authenticator.AuthApp
 import com.jefisu.authenticator.data.database.AccountDatabase.Companion.DATABASE_NAME
 

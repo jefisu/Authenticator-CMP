@@ -14,6 +14,9 @@
     <string name="enable_camera_permission">Please enable camera permission to scan QR codes</string>
 
     <!-- Error -->
+    <string name="unknown_error">Unknown error</string>
+    <string name="invalid_login">Invalid login</string>
+    <string name="invalid_secret">Invalid secret</string>
     <string name="exist_account">Account already exists.</string>
 
     <!-- Add Key Manually  -->

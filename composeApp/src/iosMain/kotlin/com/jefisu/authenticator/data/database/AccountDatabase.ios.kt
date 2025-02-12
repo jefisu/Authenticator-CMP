@@ -21,7 +21,7 @@ private fun documentDirectory(): String {
         inDomain = NSUserDomainMask,
         appropriateForURL = null,
         create = false,
-        error = null,
+        error = null
     )
     return requireNotNull(documentDirectory?.path)
 }

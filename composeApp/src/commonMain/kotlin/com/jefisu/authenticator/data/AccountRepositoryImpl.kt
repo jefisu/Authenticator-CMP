@@ -7,7 +7,7 @@ import com.jefisu.authenticator.data.database.toAccountEntity
 import com.jefisu.authenticator.data.util.runSafelyResult
 import com.jefisu.authenticator.domain.model.Account
 import com.jefisu.authenticator.domain.repository.AccountRepository
-import com.jefisu.authenticator.domain.util.DataError
+import com.jefisu.authenticator.domain.util.Error
 import com.jefisu.authenticator.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -16,13 +16,13 @@ class AccountRepositoryImpl(
     private val db: AccountDatabase
 ) : AccountRepository {
 
-    override suspend fun addAccount(account: Account): Result<Unit, DataError> {
+    override suspend fun addAccount(account: Account): Result<Unit, Error> {
         return runSafelyResult {
             db.accountDao.upsert(account.toAccountEntity())
         }
     }
 
-    override suspend fun deleteAccount(account: Account): Result<Unit, DataError> {
+    override suspend fun deleteAccount(account: Account): Result<Unit, Error> {
         return runSafelyResult {
             db.accountDao.delete(account.toAccountEntity())
         }

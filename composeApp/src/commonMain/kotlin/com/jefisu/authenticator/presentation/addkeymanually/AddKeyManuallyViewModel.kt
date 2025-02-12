@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.optics.updateCopy
 import com.jefisu.authenticator.domain.model.Account
+import com.jefisu.authenticator.domain.model.Algorithm
 import com.jefisu.authenticator.domain.model.Issuer
 import com.jefisu.authenticator.domain.usecase.UseCases
 import com.jefisu.authenticator.domain.util.DefaultIssuer
 import com.jefisu.authenticator.domain.util.onError
 import com.jefisu.authenticator.domain.util.onSuccess
 import com.jefisu.authenticator.presentation.util.asUiText
-import diglol.crypto.Hmac
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.firstOrNull
@@ -68,7 +68,9 @@ class AddKeyManuallyViewModel(
     }
 
     private fun setSecretKey(secretKey: String) {
-        _state.updateCopy { AddKeyManuallyState.secretKey set secretKey }
+        val maxLength = _state.value.algorithm.length
+        val limitedSecretKey = secretKey.take(maxLength)
+        _state.updateCopy { AddKeyManuallyState.secretKey set limitedSecretKey }
     }
 
     private fun setIssuer(issuer: Issuer?) {
@@ -79,8 +81,11 @@ class AddKeyManuallyViewModel(
         _state.updateCopy { AddKeyManuallyState.searchService set query }
     }
 
-    private fun setAlgorithm(algorithm: Hmac.Type) {
+    private fun setAlgorithm(algorithm: Algorithm) {
         _state.updateCopy { AddKeyManuallyState.algorithm set algorithm }
+
+        val secretKey = _state.value.secretKey
+        if (secretKey.length > algorithm.length) setSecretKey(secretKey)
     }
 
     private fun setRefreshPeriod(period: Int) {

@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -56,11 +54,11 @@ import com.jefisu.authenticator.core.presentation.components.AnimatedTextFieldHi
 import com.jefisu.authenticator.core.presentation.sharedtransition.SharedTransitionKeys.FAB_EXPLODE_BOUNDS_KEY
 import com.jefisu.authenticator.core.presentation.sharedtransition.sharedTransition
 import com.jefisu.authenticator.core.presentation.theme.colors
+import com.jefisu.authenticator.domain.model.Algorithm
 import com.jefisu.authenticator.presentation.addkeymanually.components.ExpandableSettings
 import com.jefisu.authenticator.presentation.addkeymanually.components.PickerSheetList
 import com.jefisu.authenticator.presentation.addkeymanually.components.ServicePicker
 import com.jefisu.authenticator.presentation.util.displayName
-import diglol.crypto.Hmac
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -241,10 +239,10 @@ private fun ExpandableSettingsSection(
     ) {
         PickerSheetList(
             title = stringResource(Res.string.algorithm),
-            items = Hmac.Type.entries.map { it.displayName() },
+            items = Algorithm.entries.map { it.displayName() },
             selectedItem = state.algorithm.displayName(),
             onSelectItem = {
-                onAction(AddKeyManuallyAction.AlgorithmChanged(Hmac.Type.valueOf(it)))
+                onAction(AddKeyManuallyAction.AlgorithmChanged(Algorithm.valueOf(it)))
             }
         )
         Spacer(Modifier.height(8.dp))
