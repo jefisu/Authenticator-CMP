@@ -1,5 +1,6 @@
 package com.jefisu.authenticator.presentation.addkeymanually
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.optics.updateCopy
@@ -13,23 +14,29 @@ import com.jefisu.authenticator.presentation.util.asUiText
 import diglol.crypto.Hmac
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AddKeyManuallyViewModel(
-    private val useCases: UseCases
+    private val useCases: UseCases,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AddKeyManuallyState())
     val state = _state
+        .onStart { retrieveAccount() }
         .onEach { unsavedChanges() }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
             _state.value
         )
+
+    private var _account: Account? = null
 
     fun onAction(action: AddKeyManuallyAction) = when (action) {
         is AddKeyManuallyAction.AccountNameChanged -> setAccountName(action.name)
@@ -119,7 +126,8 @@ class AddKeyManuallyViewModel(
                 secret = _state.value.secretKey,
                 issuer = _state.value.issuer,
                 refreshPeriod = _state.value.refreshPeriod,
-                digitCount = _state.value.digits
+                digitCount = _state.value.digits,
+                algorithm = _state.value.algorithm
             )
             useCases.addAccount.execute(account)
                 .onSuccess {
@@ -128,6 +136,27 @@ class AddKeyManuallyViewModel(
                 .onError {
                     _state.updateCopy { AddKeyManuallyState.error set it.asUiText() }
                 }
+        }
+    }
+
+    private fun retrieveAccount() {
+        savedStateHandle.get<Int>("id")?.let { id ->
+            viewModelScope.launch {
+                val account = useCases.getAllAccounts.execute()
+                    .firstOrNull()
+                    ?.find { it.id == id }
+
+                account?.let {
+                    _account = it
+                    setAccountName(it.name)
+                    setLogin(it.login)
+                    setSecretKey(it.secret)
+                    setIssuer(it.issuer)
+                    setAlgorithm(it.algorithm)
+                    setRefreshPeriod(it.refreshPeriod)
+                    setDigits(it.digitCount)
+                }
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.optics.updateCopy
 import com.jefisu.authenticator.core.util.TotpConstants.REFRESH_INTERVAL
+import com.jefisu.authenticator.domain.model.Account
 import com.jefisu.authenticator.domain.usecase.UseCases
 import com.jefisu.authenticator.domain.util.onError
 import com.jefisu.authenticator.domain.util.onSuccess
@@ -44,6 +45,7 @@ class TotpViewModel(
 
     fun onAction(action: TotpAction) = when (action) {
         is TotpAction.QrScannedFromImage -> addAccount(action.totpUri)
+        is TotpAction.DeleteAccount -> deleteAccount(action.account)
         else -> Unit
     }
 
@@ -98,6 +100,23 @@ class TotpViewModel(
         viewModelScope.launch {
             useCases.addAccount.execute(totpUri)
                 .onSuccess {
+                    _state.updateCopy { TotpState.error set null }
+                }
+                .onError {
+                    _state.updateCopy { TotpState.error set it.asUiText() }
+                }
+        }
+    }
+
+    private fun deleteAccount(account: Account) {
+        viewModelScope.launch {
+            useCases.deleteAccount.execute(account)
+                .onSuccess {
+                    _state.update {
+                        TotpState.totpAccounts.modify(it) { entries ->
+                            entries.filterNot { (_, _account) -> _account == account }
+                        }
+                    }
                     _state.updateCopy { TotpState.error set null }
                 }
                 .onError {

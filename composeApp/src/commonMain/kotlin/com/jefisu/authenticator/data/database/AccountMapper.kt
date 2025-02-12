@@ -4,7 +4,7 @@ import com.jefisu.authenticator.domain.model.Account
 
 fun AccountEntity.toAccount(): Account {
     return Account(
-        id = id,
+        _id = id,
         login = login,
         secret = secret,
         issuer = issuer,

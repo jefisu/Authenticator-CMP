@@ -11,5 +11,5 @@ sealed interface Destination {
     data object QrScannerScreen : Destination
 
     @Serializable
-    data class AddKeyManuallyScreen(val id: String? = null) : Destination
+    data class AddKeyManuallyScreen(val id: Int?) : Destination
 }

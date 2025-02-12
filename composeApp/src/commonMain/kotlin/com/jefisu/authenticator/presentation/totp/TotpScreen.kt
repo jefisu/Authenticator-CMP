@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,6 +46,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -58,11 +62,14 @@ import authenticator.composeapp.generated.resources.ic_qr_code_scan
 import authenticator.composeapp.generated.resources.ic_search_image
 import com.jefisu.authenticator.core.presentation.sharedtransition.SharedTransitionKeys.FAB_EXPLODE_BOUNDS_KEY
 import com.jefisu.authenticator.core.presentation.sharedtransition.sharedTransition
+import com.jefisu.authenticator.core.presentation.theme.LightOptCodeColor
 import com.jefisu.authenticator.core.presentation.theme.colors
 import com.jefisu.authenticator.core.util.Platform
 import com.jefisu.authenticator.core.util.getPlatform
+import com.jefisu.authenticator.domain.model.Account
 import com.jefisu.authenticator.presentation.totp.components.ArcExpandingFAB
 import com.jefisu.authenticator.presentation.totp.components.FABItem
+import com.jefisu.authenticator.presentation.totp.components.SwipeableItemWithActions
 import com.jefisu.authenticator.presentation.totp.components.TotpCodeItem
 import com.mohamedrejeb.calf.picker.FilePickerFileType
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
@@ -74,7 +81,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun TotpScreen(
     onNavigateQrScanner: () -> Unit,
-    onNavigateEnterKeyManually: () -> Unit
+    onNavigateEnterKeyManually: (Int?) -> Unit
 ) {
     val viewModel = koinViewModel<TotpViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -84,8 +91,8 @@ fun TotpScreen(
         onAction = { action ->
             when (action) {
                 TotpAction.NavigateQrScanner -> onNavigateQrScanner()
-                TotpAction.NavigateEnterKeyManually -> onNavigateEnterKeyManually()
-                else -> Unit
+                is TotpAction.NavigateEnterKeyManually -> onNavigateEnterKeyManually(action.accountId)
+                else -> viewModel.onAction(action)
             }
         }
     )
@@ -114,7 +121,7 @@ fun TotpScreenContent(
             ),
             FABItem(
                 iconRes = Res.drawable.ic_pen_field,
-                onClick = { onAction(TotpAction.NavigateEnterKeyManually) }
+                onClick = { onAction(TotpAction.NavigateEnterKeyManually(accountId = null)) }
             ),
             FABItem(
                 iconRes = Res.drawable.ic_search_image,
@@ -138,6 +145,8 @@ fun TotpScreenContent(
     ) { innerPadding ->
         TotpCodeList(
             state = state,
+            scrollBehavior = scrollBehavior,
+            modifier = Modifier.padding(innerPadding),
             onTotpClick = { code ->
                 clipBoardManager.setText(AnnotatedString(code))
                 if (getPlatform() == Platform.IOS) {
@@ -150,8 +159,12 @@ fun TotpScreenContent(
                     }
                 }
             },
-            scrollBehavior = scrollBehavior,
-            modifier = Modifier.padding(innerPadding)
+            onDeleteClick = { account ->
+                onAction(TotpAction.DeleteAccount(account))
+            },
+            onEditClick = { account ->
+                onAction(TotpAction.NavigateEnterKeyManually(account.id))
+            }
         )
     }
 }
@@ -216,23 +229,61 @@ private fun TotpFloatingActionButton(
 private fun TotpCodeList(
     state: TotpState,
     onTotpClick: (String) -> Unit,
+    onDeleteClick: (Account) -> Unit,
+    onEditClick: (Account) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(state.totpAccounts.toList()) { (totp, account) ->
-            TotpCodeItem(
-                account = account,
-                totp = { totp },
-                remainingTime = { state.timeUntilTotpRefresh },
-                onClick = { onTotpClick(totp) },
-                modifier = Modifier.fillMaxWidth()
-            )
+            var isRevealed by remember { mutableStateOf(false) }
+
+            SwipeableItemWithActions(
+                isRevealed = isRevealed,
+                onExpanded = { isRevealed = true },
+                onCollapsed = { isRevealed = false },
+                endActions = {
+                    IconButton(
+                        onClick = {
+                            isRevealed = false
+                            onEditClick(account)
+                        },
+                        modifier = Modifier.scale(1.2f)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Edit,
+                            contentDescription = "Edit",
+                            tint = LightOptCodeColor
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            isRevealed = false
+                            onDeleteClick(account)
+                        },
+                        modifier = Modifier.scale(1.2f)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Delete,
+                            contentDescription = "Delete",
+                            tint = Color.Red
+                        )
+                    }
+                },
+                modifier = Modifier.animateItem()
+            ) {
+                TotpCodeItem(
+                    account = account,
+                    totp = { totp },
+                    remainingTime = { state.timeUntilTotpRefresh },
+                    onClick = { onTotpClick(totp) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }

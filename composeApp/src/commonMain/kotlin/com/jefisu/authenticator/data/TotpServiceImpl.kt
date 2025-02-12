@@ -9,7 +9,7 @@ class TotpServiceImpl : TotpService {
 
     private fun getTotpGenerator(account: Account): Totp {
         return Totp(
-            hmacType = Hmac.Type.SHA1,
+            hmacType = account.algorithm,
             hmacKey = account.secret.encodeToByteArray(),
             period = account.refreshPeriod,
             codeLength = account.digitCount,

@@ -3,7 +3,6 @@ package com.jefisu.authenticator.domain.util
 import com.jefisu.authenticator.core.util.TotpConstants.CODE_LENGTH
 import com.jefisu.authenticator.core.util.TotpConstants.REFRESH_INTERVAL
 import com.jefisu.authenticator.domain.model.Account
-import com.jefisu.authenticator.domain.model.CustomIssuer
 
 fun parseTotpUri(uri: String): Account? {
     val emailRegex = "totp/(?:.*?:)?([^?]+)".toRegex()
@@ -20,18 +19,17 @@ fun parseTotpUri(uri: String): Account? {
     }
 
     val secret = secretRegex.find(uri)?.groupValues?.get(1) ?: return null
-    val issuer = issuerRegex.find(uri)?.groupValues?.get(1) ?: return null
+    val accountOrigin = issuerRegex.find(uri)?.groupValues?.get(1) ?: return null
     val email = finalEmail ?: return null
     val digits = digitsRegex.find(uri)?.groupValues?.get(1)?.toIntOrNull() ?: CODE_LENGTH
     val period = periodRegex.find(uri)?.groupValues?.get(1)?.toIntOrNull() ?: REFRESH_INTERVAL
+
+    val issuer = DefaultIssuer.getIssuer(accountOrigin)
     return Account(
-        name = "",
-        issuer = DefaultIssuer.entries
-            .firstOrNull { it.identifier.contains(issuer, ignoreCase = true) }
-            ?: CustomIssuer(issuer, ""),
+        name = issuer?.identifier.orEmpty(),
+        issuer = issuer,
         login = email,
         secret = secret,
-        id = 0,
         refreshPeriod = period,
         digitCount = digits
     )

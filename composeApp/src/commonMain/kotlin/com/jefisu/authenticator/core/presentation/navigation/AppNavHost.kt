@@ -26,7 +26,9 @@ fun AppNavHost() {
             ProvideAnimatedContentScope {
                 TotpScreen(
                     onNavigateQrScanner = { navController.navigate(Destination.QrScannerScreen) },
-                    onNavigateEnterKeyManually = { navController.navigate(Destination.AddKeyManuallyScreen()) }
+                    onNavigateEnterKeyManually = { accountId ->
+                        navController.navigate(Destination.AddKeyManuallyScreen(accountId))
+                    }
                 )
             }
         }
@@ -34,7 +36,9 @@ fun AppNavHost() {
             ProvideAnimatedContentScope {
                 QrScannerScreen(
                     onNavigateBack = navController::navigateUp,
-                    onNavigateToEnterKeyManually = { navController.navigate(Destination.AddKeyManuallyScreen()) }
+                    onNavigateToEnterKeyManually = {
+                        navController.navigate(Destination.AddKeyManuallyScreen(null))
+                    }
                 )
             }
         }

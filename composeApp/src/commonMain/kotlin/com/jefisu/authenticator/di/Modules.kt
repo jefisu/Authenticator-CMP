@@ -6,6 +6,7 @@ import com.jefisu.authenticator.data.database.getAccountDatabase
 import com.jefisu.authenticator.domain.repository.AccountRepository
 import com.jefisu.authenticator.domain.service.TotpService
 import com.jefisu.authenticator.domain.usecase.AddAccountUseCase
+import com.jefisu.authenticator.domain.usecase.DeleteAccountUseCase
 import com.jefisu.authenticator.domain.usecase.GenerateTotpUseCase
 import com.jefisu.authenticator.domain.usecase.GetAllAccountsUseCase
 import com.jefisu.authenticator.domain.usecase.UseCases
@@ -25,6 +26,7 @@ val sharedModule = module {
     singleOf(::AddAccountUseCase)
     singleOf(::GetAllAccountsUseCase)
     singleOf(::GenerateTotpUseCase)
+    singleOf(::DeleteAccountUseCase)
     singleOf(::UseCases)
 
     viewModelOf(::TotpViewModel)
