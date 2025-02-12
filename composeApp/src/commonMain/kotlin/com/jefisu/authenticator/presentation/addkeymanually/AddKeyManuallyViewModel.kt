@@ -29,14 +29,14 @@ class AddKeyManuallyViewModel(
     private val _state = MutableStateFlow(AddKeyManuallyState())
     val state = _state
         .onStart { retrieveAccount() }
-        .onEach { unsavedChanges() }
+        .onEach { checkUnsavedChanges() }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
             _state.value
         )
 
-    private var _account: Account? = null
+    private var _storedAccount: Account? = null
 
     fun onAction(action: AddKeyManuallyAction) = when (action) {
         is AddKeyManuallyAction.AccountNameChanged -> setAccountName(action.name)
@@ -101,19 +101,27 @@ class AddKeyManuallyViewModel(
         _state.updateCopy { AddKeyManuallyState.error set null }
     }
 
-    private fun unsavedChanges() {
+    private fun checkUnsavedChanges() {
+        val currentState = _state.value
         val initialState = AddKeyManuallyState()
-        val unsavedChanges = mapOf(
-            _state.value.accountName to initialState.accountName,
-            _state.value.secretKey to initialState.secretKey,
-            _state.value.issuer to initialState.issuer,
-            _state.value.algorithm to initialState.algorithm,
-            _state.value.refreshPeriod to initialState.refreshPeriod,
-            _state.value.digits to initialState.digits
-        ).any { (new, old) ->
-            new != old
+
+        val hasUnsavedChanges = _storedAccount?.let { account ->
+            val fieldComparisons = listOf(
+                currentState.accountName to account.name,
+                currentState.login to account.login,
+                currentState.secretKey to account.secret,
+                currentState.issuer to account.issuer,
+                currentState.algorithm to account.algorithm,
+                currentState.refreshPeriod to account.refreshPeriod,
+                currentState.digits to account.digitCount
+            )
+            fieldComparisons.any { (new, old) -> new != old }
+        } ?: kotlin.run {
+            currentState.login != initialState.login
+                    && currentState.secretKey != initialState.secretKey
         }
-        _state.updateCopy { AddKeyManuallyState.unsavedChanges set unsavedChanges }
+
+        _state.updateCopy { AddKeyManuallyState.unsavedChanges set hasUnsavedChanges }
     }
 
     private fun save() {
@@ -147,7 +155,7 @@ class AddKeyManuallyViewModel(
                     ?.find { it.id == id }
 
                 account?.let {
-                    _account = it
+                    _storedAccount = it
                     setAccountName(it.name)
                     setLogin(it.login)
                     setSecretKey(it.secret)
