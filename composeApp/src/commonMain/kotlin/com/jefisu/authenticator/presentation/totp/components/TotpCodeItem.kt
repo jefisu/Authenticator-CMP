@@ -50,22 +50,19 @@ import coil3.compose.SubcomposeAsyncImage
 import com.jefisu.authenticator.core.presentation.theme.colors
 import com.jefisu.authenticator.core.util.TotpConstants
 import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
+import com.jefisu.authenticator.presentation.totp.TotpCode
 import com.jefisu.authenticator.presentation.util.getLogoUrl
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TotpCodeItem(
-    account: TwoFactorAuthAccount,
-    totp: () -> String,
-    remainingTime: () -> Int,
+    totpCode: TotpCode,
     modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
-    numDigits: Int = TotpConstants.CODE_LENGTH,
-    maxTime: Int = TotpConstants.REFRESH_INTERVAL
+    onClick: (() -> Unit)? = null
 ) {
-    val isFinalPartOfTime = remember(remainingTime()) {
-        remainingTime() <= (maxTime / 3)
+    val isFinalPartOfTime = remember(totpCode.remainingTime) {
+        totpCode.remainingTime <= 10
     }
 
     val backgroundColor by animateColorAsState(
@@ -92,19 +89,24 @@ fun TotpCodeItem(
             .padding(16.dp)
     ) {
         Row {
-            ServiceIcon(account)
+            ServiceIcon(totpCode.account)
             Spacer(Modifier.width(16.dp))
             AccountInfo(
-                account = account,
+                account = totpCode.account,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
             Spacer(Modifier.weight(1f))
-            TimeIndicator(remainingTime, maxTime, backgroundColor, contentColor)
+            TimeIndicator(
+                remainingTime = { totpCode.remainingTime },
+                maxTime = totpCode.account.refreshPeriod,
+                backgroundColor = backgroundColor,
+                contentColor = contentColor
+            )
         }
         Spacer(Modifier.height(16.dp))
         TotpCode(
-            code = totp,
-            numDigits = numDigits,
+            code = { totpCode.code },
+            numDigits = totpCode.account.digitCount,
             backgroundColor = backgroundColor,
             contentColor = contentColor
         )

@@ -239,7 +239,10 @@ private fun TotpCodeList(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(state.totpAccounts.toList()) { (totp, account) ->
+        items(
+            items = state.totpCodes,
+            key = { it.account.id!! }
+        ) { totpCode ->
             var isRevealed by remember { mutableStateOf(false) }
 
             SwipeableItemWithActions(
@@ -250,7 +253,7 @@ private fun TotpCodeList(
                     IconButton(
                         onClick = {
                             isRevealed = false
-                            onEditClick(account)
+                            onEditClick(totpCode.account)
                         },
                         modifier = Modifier.scale(1.2f)
                     ) {
@@ -263,7 +266,7 @@ private fun TotpCodeList(
                     IconButton(
                         onClick = {
                             isRevealed = false
-                            onDeleteClick(account)
+                            onDeleteClick(totpCode.account)
                         },
                         modifier = Modifier.scale(1.2f)
                     ) {
@@ -277,10 +280,8 @@ private fun TotpCodeList(
                 modifier = Modifier.animateItem()
             ) {
                 TotpCodeItem(
-                    account = account,
-                    totp = { totp },
-                    remainingTime = { state.timeUntilTotpRefresh },
-                    onClick = { onTotpClick(totp) },
+                    totpCode = totpCode,
+                    onClick = { onTotpClick(totpCode.code) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }

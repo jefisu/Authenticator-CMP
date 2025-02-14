@@ -7,9 +7,17 @@ import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 
 @optics
 data class TotpState(
-    val totpAccounts: Map<String, TwoFactorAuthAccount> = emptyMap(),
-    val timeUntilTotpRefresh: Int = TotpConstants.REFRESH_INTERVAL,
+    val totpCodes: List<TotpCode> = emptyList(),
     val error: UiText? = null
+) {
+    companion object
+}
+
+@optics
+data class TotpCode(
+    val account: TwoFactorAuthAccount,
+    val code: String,
+    val remainingTime: Int
 ) {
     companion object
 }
