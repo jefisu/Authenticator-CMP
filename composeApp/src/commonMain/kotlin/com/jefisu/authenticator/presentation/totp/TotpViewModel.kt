@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.optics.updateCopy
 import com.jefisu.authenticator.core.util.TotpConstants.REFRESH_INTERVAL
-import com.jefisu.authenticator.domain.model.Account
+import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.domain.usecase.UseCases
 import com.jefisu.authenticator.domain.util.onError
 import com.jefisu.authenticator.domain.util.onSuccess
@@ -108,7 +108,7 @@ class TotpViewModel(
         }
     }
 
-    private fun deleteAccount(account: Account) {
+    private fun deleteAccount(account: TwoFactorAuthAccount) {
         viewModelScope.launch {
             useCases.deleteAccount.execute(account)
                 .onSuccess {

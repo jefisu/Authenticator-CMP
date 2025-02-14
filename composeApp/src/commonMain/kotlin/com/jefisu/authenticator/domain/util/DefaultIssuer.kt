@@ -1,6 +1,5 @@
 package com.jefisu.authenticator.domain.util
 
-import com.jefisu.authenticator.domain.model.CustomIssuer
 import com.jefisu.authenticator.domain.model.Issuer
 
 enum class DefaultIssuer(

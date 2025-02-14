@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 @Database(entities = [AccountEntity::class], version = 1)
-@TypeConverters(IssuerConverter::class)
+@TypeConverters(IssuerConverter::class, AlgorithmConverter::class)
 @ConstructedBy(AccountDatabaseConstructor::class)
 abstract class AccountDatabase : RoomDatabase() {
     abstract val accountDao: AccountDao

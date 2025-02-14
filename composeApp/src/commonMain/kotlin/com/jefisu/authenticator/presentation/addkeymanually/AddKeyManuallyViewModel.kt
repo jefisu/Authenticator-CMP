@@ -4,9 +4,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.optics.updateCopy
-import com.jefisu.authenticator.domain.model.Account
 import com.jefisu.authenticator.domain.model.Algorithm
 import com.jefisu.authenticator.domain.model.Issuer
+import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
+import com.jefisu.authenticator.domain.model.algorithm
+import com.jefisu.authenticator.domain.model.digitCount
+import com.jefisu.authenticator.domain.model.issuer
+import com.jefisu.authenticator.domain.model.login
+import com.jefisu.authenticator.domain.model.name
+import com.jefisu.authenticator.domain.model.refreshPeriod
+import com.jefisu.authenticator.domain.model.secret
 import com.jefisu.authenticator.domain.usecase.UseCases
 import com.jefisu.authenticator.domain.util.DefaultIssuer
 import com.jefisu.authenticator.domain.util.onError
@@ -36,7 +43,7 @@ class AddKeyManuallyViewModel(
             _state.value
         )
 
-    private var _storedAccount: Account? = null
+    private var _storedAccount: TwoFactorAuthAccount? = null
 
     fun onAction(action: AddKeyManuallyAction) = when (action) {
         is AddKeyManuallyAction.AccountNameChanged -> setAccountName(action.name)
@@ -54,7 +61,7 @@ class AddKeyManuallyViewModel(
     }
 
     private fun setAccountName(name: String) {
-        _state.updateCopy { AddKeyManuallyState.accountName set name }
+        _state.updateCopy { AddKeyManuallyState.account.name set name }
 
         if (name.isNotEmpty()) {
             setIssuer(DefaultIssuer.getIssuer(name))
@@ -64,17 +71,19 @@ class AddKeyManuallyViewModel(
     }
 
     private fun setLogin(login: String) {
-        _state.updateCopy { AddKeyManuallyState.login set login }
+        _state.updateCopy {
+            AddKeyManuallyState.account.login set login
+        }
     }
 
     private fun setSecretKey(secretKey: String) {
-        val maxLength = _state.value.algorithm.length
+        val maxLength = _state.value.account.algorithm.length
         val limitedSecretKey = secretKey.take(maxLength)
-        _state.updateCopy { AddKeyManuallyState.secretKey set limitedSecretKey }
+        _state.updateCopy { AddKeyManuallyState.account.secret set limitedSecretKey }
     }
 
     private fun setIssuer(issuer: Issuer?) {
-        _state.updateCopy { AddKeyManuallyState.issuer set issuer }
+        _state.updateCopy { AddKeyManuallyState.account.issuer set issuer }
     }
 
     private fun setSearchQuery(query: String) {
@@ -82,18 +91,18 @@ class AddKeyManuallyViewModel(
     }
 
     private fun setAlgorithm(algorithm: Algorithm) {
-        _state.updateCopy { AddKeyManuallyState.algorithm set algorithm }
+        _state.updateCopy { AddKeyManuallyState.account.algorithm set algorithm }
 
-        val secretKey = _state.value.secretKey
+        val secretKey = _state.value.account.secret
         if (secretKey.length > algorithm.length) setSecretKey(secretKey)
     }
 
     private fun setRefreshPeriod(period: Int) {
-        _state.updateCopy { AddKeyManuallyState.refreshPeriod set period }
+        _state.updateCopy { AddKeyManuallyState.account.refreshPeriod set period }
     }
 
     private fun setDigits(digits: Int) {
-        _state.updateCopy { AddKeyManuallyState.digits set digits }
+        _state.updateCopy { AddKeyManuallyState.account.digitCount set digits }
     }
 
     private fun toggleExpandSettings() {
@@ -107,42 +116,29 @@ class AddKeyManuallyViewModel(
     }
 
     private fun checkUnsavedChanges() {
-        val currentState = _state.value
-        val initialState = AddKeyManuallyState()
+        val account = _state.value.account
 
-        val hasUnsavedChanges = _storedAccount?.let { account ->
+        val hasUnsavedChanges = _storedAccount?.run {
             val fieldComparisons = listOf(
-                currentState.accountName to account.name,
-                currentState.login to account.login,
-                currentState.secretKey to account.secret,
-                currentState.issuer to account.issuer,
-                currentState.algorithm to account.algorithm,
-                currentState.refreshPeriod to account.refreshPeriod,
-                currentState.digits to account.digitCount
+                account.name to name,
+                account.login to login,
+                account.secret to secret,
+                account.issuer to issuer,
+                account.algorithm to algorithm,
+                account.refreshPeriod to refreshPeriod,
+                account.digitCount to digitCount
             )
             fieldComparisons.any { (new, old) -> new != old }
-        } ?: kotlin.run {
-            currentState.login != initialState.login
-                    && currentState.secretKey != initialState.secretKey
+        } ?: AddKeyManuallyState().let { initialState ->
+            account.login != initialState.account.login
+                    && account.secret != initialState.account.secret
         }
-
         _state.updateCopy { AddKeyManuallyState.unsavedChanges set hasUnsavedChanges }
     }
 
     private fun save() {
         viewModelScope.launch {
-            val account = Account(
-                name = _state.value.accountName.ifEmpty {
-                    _state.value.issuer?.identifier.orEmpty()
-                },
-                login = _state.value.login,
-                secret = _state.value.secretKey,
-                issuer = _state.value.issuer,
-                refreshPeriod = _state.value.refreshPeriod,
-                digitCount = _state.value.digits,
-                algorithm = _state.value.algorithm
-            )
-            useCases.addAccount.execute(account)
+            useCases.addAccount.execute(_state.value.account)
                 .onSuccess {
                     _state.updateCopy { AddKeyManuallyState.saved set true }
                 }
@@ -161,15 +157,23 @@ class AddKeyManuallyViewModel(
 
                 account?.let {
                     _storedAccount = it
-                    setAccountName(it.name)
-                    setLogin(it.login)
-                    setSecretKey(it.secret)
-                    setIssuer(it.issuer)
-                    setAlgorithm(it.algorithm)
-                    setRefreshPeriod(it.refreshPeriod)
-                    setDigits(it.digitCount)
+                    _state.updateCopy { AddKeyManuallyState.account set it }
+                    configDiffDetected()
                 }
             }
         }
     }
+
+    private fun configDiffDetected() = with(_state.value.account) {
+        val defaultAccount = AddKeyManuallyState().account
+        val isDifferentFromDefault = listOf(
+            algorithm to defaultAccount.algorithm,
+            refreshPeriod to defaultAccount.refreshPeriod,
+            digitCount to defaultAccount.digitCount
+        ).any { (current, default) ->
+            current != default
+        }
+        _state.updateCopy { AddKeyManuallyState.settingsExpanded set isDifferentFromDefault }
+    }
+
 }

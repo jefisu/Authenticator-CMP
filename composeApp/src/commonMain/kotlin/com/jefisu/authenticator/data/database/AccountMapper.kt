@@ -1,20 +1,21 @@
 package com.jefisu.authenticator.data.database
 
-import com.jefisu.authenticator.domain.model.Account
+import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 
-fun AccountEntity.toAccount(): Account {
-    return Account(
-        _id = id,
+fun AccountEntity.toAccount(): TwoFactorAuthAccount {
+    return TwoFactorAuthAccount(
+        id = id,
         login = login,
         secret = secret,
         issuer = issuer,
         refreshPeriod = refreshPeriod,
         digitCount = digitCount,
         name = name,
+        algorithm = algorithm
     )
 }
 
-fun Account.toAccountEntity(): AccountEntity {
+fun TwoFactorAuthAccount.toAccountEntity(): AccountEntity {
     return AccountEntity(
         id = id,
         login = login,
@@ -22,6 +23,7 @@ fun Account.toAccountEntity(): AccountEntity {
         issuer = issuer,
         refreshPeriod = refreshPeriod,
         digitCount = digitCount,
-        name = name
+        name = name,
+        algorithm = algorithm
     )
 }

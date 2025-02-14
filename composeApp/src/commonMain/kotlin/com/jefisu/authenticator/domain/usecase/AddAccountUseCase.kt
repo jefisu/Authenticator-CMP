@@ -1,6 +1,6 @@
 package com.jefisu.authenticator.domain.usecase
 
-import com.jefisu.authenticator.domain.model.Account
+import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.domain.repository.AccountRepository
 import com.jefisu.authenticator.domain.util.Error
 import com.jefisu.authenticator.domain.util.Result
@@ -18,7 +18,7 @@ class AddAccountUseCase(
         return repository.addAccount(account)
     }
 
-    suspend fun execute(account: Account): Result<Unit, Error> {
+    suspend fun execute(account: TwoFactorAuthAccount): Result<Unit, Error> {
         val validationResult = accountRulesValidator.validate(account)
         if (!validationResult.sucessfully) {
             return Result.Error(validationResult.error!!)

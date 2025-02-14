@@ -66,7 +66,7 @@ import com.jefisu.authenticator.core.presentation.theme.LightOptCodeColor
 import com.jefisu.authenticator.core.presentation.theme.colors
 import com.jefisu.authenticator.core.util.Platform
 import com.jefisu.authenticator.core.util.getPlatform
-import com.jefisu.authenticator.domain.model.Account
+import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.presentation.totp.components.ArcExpandingFAB
 import com.jefisu.authenticator.presentation.totp.components.FABItem
 import com.jefisu.authenticator.presentation.totp.components.SwipeableItemWithActions
@@ -229,8 +229,8 @@ private fun TotpFloatingActionButton(
 private fun TotpCodeList(
     state: TotpState,
     onTotpClick: (String) -> Unit,
-    onDeleteClick: (Account) -> Unit,
-    onEditClick: (Account) -> Unit,
+    onDeleteClick: (TwoFactorAuthAccount) -> Unit,
+    onEditClick: (TwoFactorAuthAccount) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     modifier: Modifier = Modifier
 ) {

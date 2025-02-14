@@ -2,9 +2,10 @@ package com.jefisu.authenticator.domain.util
 
 import com.jefisu.authenticator.core.util.TotpConstants.CODE_LENGTH
 import com.jefisu.authenticator.core.util.TotpConstants.REFRESH_INTERVAL
-import com.jefisu.authenticator.domain.model.Account
+import com.jefisu.authenticator.domain.model.Algorithm
+import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 
-fun parseTotpUri(uri: String): Account? {
+fun parseTotpUri(uri: String): TwoFactorAuthAccount? {
     val emailRegex = "totp/(?:.*?:)?([^?]+)".toRegex()
     val issuerRegex = "issuer=([^&]+)".toRegex()
     val secretRegex = "secret=([^&]+)".toRegex()
@@ -25,13 +26,14 @@ fun parseTotpUri(uri: String): Account? {
     val period = periodRegex.find(uri)?.groupValues?.get(1)?.toIntOrNull() ?: REFRESH_INTERVAL
 
     val issuer = DefaultIssuer.getIssuer(accountOrigin)
-    return Account(
+    return TwoFactorAuthAccount(
         name = issuer?.identifier.orEmpty(),
         issuer = issuer,
         login = email,
         secret = secret,
         refreshPeriod = period,
-        digitCount = digits
+        digitCount = digits,
+        algorithm = Algorithm.SHA1
     )
 }
 

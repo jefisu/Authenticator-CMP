@@ -127,7 +127,7 @@ fun AddKeyManuallyScreenContent(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             AnimatedTextFieldHint(
-                text = state.accountName,
+                text = state.account.name,
                 onTextChange = { onAction(AddKeyManuallyAction.AccountNameChanged(it)) },
                 hint = stringResource(Res.string.account_name),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -140,7 +140,7 @@ fun AddKeyManuallyScreenContent(
             )
             Spacer(Modifier.height(8.dp))
             AnimatedTextFieldHint(
-                text = state.login,
+                text = state.account.login,
                 onTextChange = { onAction(AddKeyManuallyAction.LoginChanged(it)) },
                 hint = stringResource(Res.string.login),
                 keyboardActions = KeyboardActions {
@@ -152,7 +152,7 @@ fun AddKeyManuallyScreenContent(
             )
             Spacer(Modifier.height(8.dp))
             AnimatedTextFieldHint(
-                text = state.secretKey,
+                text = state.account.secret,
                 onTextChange = { onAction(AddKeyManuallyAction.SecretKeyChanged(it)) },
                 hint = stringResource(Res.string.secret_key),
                 keyboardActions = KeyboardActions {
@@ -164,7 +164,7 @@ fun AddKeyManuallyScreenContent(
             )
             Spacer(Modifier.height(24.dp))
             ServicePicker(
-                selectedIssuer = state.issuer,
+                selectedIssuer = state.account.issuer,
                 searchText = state.searchService,
                 onSearchChange = { onAction(AddKeyManuallyAction.SearchQueryChanged(it)) },
                 onSelectIssuer = { onAction(AddKeyManuallyAction.IssuerChanged(it)) },
@@ -240,7 +240,7 @@ private fun ExpandableSettingsSection(
         PickerSheetList(
             title = stringResource(Res.string.algorithm),
             items = Algorithm.entries.map { it.displayName() },
-            selectedItem = state.algorithm.displayName(),
+            selectedItem = state.account.algorithm.displayName(),
             onSelectItem = {
                 onAction(AddKeyManuallyAction.AlgorithmChanged(Algorithm.valueOf(it)))
             }
@@ -249,7 +249,7 @@ private fun ExpandableSettingsSection(
         PickerSheetList(
             title = stringResource(Res.string.refresh_period),
             items = (30..90 step 30).map { "$it $timeUnit" },
-            selectedItem = "${state.refreshPeriod} $timeUnit",
+            selectedItem = "${state.account.refreshPeriod} $timeUnit",
             onSelectItem = { periodString ->
                 onAction(AddKeyManuallyAction.RefreshPeriodChanged(onlyDigits(periodString)))
             }
@@ -258,7 +258,7 @@ private fun ExpandableSettingsSection(
         PickerSheetList(
             title = stringResource(Res.string.digits),
             items = (3..9 step 3).map { "$it $digits" },
-            selectedItem = state.digits.toString(),
+            selectedItem = state.account.digitCount.toString(),
             onSelectItem = { digitsString ->
                 onAction(AddKeyManuallyAction.DigitsChanged(onlyDigits(digitsString)))
             }

@@ -49,14 +49,14 @@ import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
 import com.jefisu.authenticator.core.presentation.theme.colors
 import com.jefisu.authenticator.core.util.TotpConstants
-import com.jefisu.authenticator.domain.model.Account
+import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.presentation.util.getLogoUrl
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TotpCodeItem(
-    account: Account,
+    account: TwoFactorAuthAccount,
     totp: () -> String,
     remainingTime: () -> Int,
     modifier: Modifier = Modifier,
@@ -113,7 +113,7 @@ fun TotpCodeItem(
 
 @Composable
 private fun ServiceIcon(
-    account: Account,
+    account: TwoFactorAuthAccount,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -151,7 +151,7 @@ private fun ServiceIcon(
 
 @Composable
 private fun AccountInfo(
-    account: Account,
+    account: TwoFactorAuthAccount,
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {

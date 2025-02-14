@@ -1,9 +1,9 @@
 package com.jefisu.authenticator.domain.validation
 
-import com.jefisu.authenticator.domain.model.Account
+import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.domain.util.Error
 
-val accountRulesValidator = Validator<Account> { account ->
+val accountRulesValidator = Validator<TwoFactorAuthAccount> { account ->
     validationRules
         .firstOrNull { !it.validate(account) }
         ?.let { rule -> ValidationResult(sucessfully = false, error = rule.error) }
@@ -17,7 +17,7 @@ enum class AccountValidationError : Error {
 }
 
 private val validationRules = listOf(
-    ValidationRule<Account>(
+    ValidationRule<TwoFactorAuthAccount>(
         validate = { it.login.isNotEmpty() },
         error = AccountValidationError.INVALID_LOGIN
     ),

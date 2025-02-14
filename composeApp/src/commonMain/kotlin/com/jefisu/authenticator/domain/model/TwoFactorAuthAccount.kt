@@ -1,14 +1,17 @@
 package com.jefisu.authenticator.domain.model
 
-data class Account(
+import arrow.optics.optics
+
+@optics
+data class TwoFactorAuthAccount(
     val name: String,
     val login: String,
     val secret: String,
     val issuer: Issuer?,
     val refreshPeriod: Int,
     val digitCount: Int,
-    val algorithm: Algorithm = Algorithm.SHA1,
-    private val _id: Int? = null
+    val algorithm: Algorithm,
+    val id: Int? = null
 ) {
-    val id by lazy { _id ?: 0 }
+    companion object
 }
