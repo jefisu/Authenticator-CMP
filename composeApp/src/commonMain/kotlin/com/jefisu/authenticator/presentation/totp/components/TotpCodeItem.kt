@@ -37,6 +37,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -48,7 +49,6 @@ import authenticator.composeapp.generated.resources.not_defined
 import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
 import com.jefisu.authenticator.core.presentation.theme.colors
-import com.jefisu.authenticator.core.util.TotpConstants
 import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.presentation.totp.TotpCode
 import com.jefisu.authenticator.presentation.util.getLogoUrl
@@ -230,35 +230,44 @@ private fun TotpCode(
             .height(otpSize)
     ) {
         val otpSizePx = otpSize.toPx()
+        val spaceSmall = 8.dp.toPx()
+        val spaceLarge = 16.dp.toPx()
+
+        val groupCount = numDigits / 3
+        val totalWidth = (otpSizePx * numDigits) +
+                (groupCount * spaceLarge) +
+                ((numDigits - groupCount - 1) * spaceSmall)
+
+        val scaleFactor = if (totalWidth > size.width) 0.8f else 1f
+        val otpCenter = Offset(otpSizePx / 2, otpSizePx / 2)
         var currentOffset = 0f
 
-        repeat(numDigits) { index ->
-            val space = when (index + 1) {
-                numDigits / 2 -> 16.dp.toPx()
-                else -> 8.dp.toPx()
-            }
-
-            drawRoundRect(
-                color = backgroundColor,
-                cornerRadius = CornerRadius(8.dp.toPx()),
-                size = Size(otpSizePx, otpSizePx),
-                topLeft = Offset(x = currentOffset, y = 0f)
-            )
-
-            val textResult = textMeasurer.measure(
-                text = code()[index].toString(),
-                style = textStyle.copy(color = contentColor)
-            )
-            val otpCenter = Offset(x = otpSizePx / 2, y = otpSizePx / 2)
-            drawText(
-                textLayoutResult = textResult,
-                topLeft = Offset(
-                    x = currentOffset + otpCenter.x - (textResult.size.width / 2),
-                    y = otpCenter.y - textResult.size.height / 2
+        scale(scale = scaleFactor, pivot = otpCenter) {
+            code().take(numDigits).forEachIndexed { index, char ->
+                drawRoundRect(
+                    color = backgroundColor,
+                    cornerRadius = CornerRadius(8.dp.toPx()),
+                    size = Size(otpSizePx, otpSizePx),
+                    topLeft = Offset(x = currentOffset, y = 0f)
                 )
-            )
 
-            currentOffset += otpSizePx + space
+                val textResult = textMeasurer.measure(
+                    text = char.toString(),
+                    style = textStyle.copy(color = contentColor)
+                )
+
+                drawText(
+                    textLayoutResult = textResult,
+                    topLeft = Offset(
+                        x = currentOffset + otpCenter.x - (textResult.size.width / 2),
+                        y = otpCenter.y - textResult.size.height / 2
+                    )
+                )
+
+                val isGroupSeparator = (index + 1) % 3 == 0
+                val space = if (isGroupSeparator) spaceLarge else spaceSmall
+                currentOffset += otpSizePx + space
+            }
         }
     }
 }
