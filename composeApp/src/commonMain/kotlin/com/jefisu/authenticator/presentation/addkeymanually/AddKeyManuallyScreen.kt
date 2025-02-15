@@ -51,6 +51,7 @@ import authenticator.composeapp.generated.resources.secret_key
 import authenticator.composeapp.generated.resources.think_twice_before_change
 import authenticator.composeapp.generated.resources.we_dont_recommend_change
 import com.jefisu.authenticator.core.presentation.components.AnimatedTextFieldHint
+import com.jefisu.authenticator.core.presentation.components.ShowErrorSnackbar
 import com.jefisu.authenticator.core.presentation.sharedtransition.SharedTransitionKeys.FAB_EXPLODE_BOUNDS_KEY
 import com.jefisu.authenticator.core.presentation.sharedtransition.sharedTransition
 import com.jefisu.authenticator.core.presentation.theme.colors
@@ -96,16 +97,11 @@ fun AddKeyManuallyScreenContent(
     val focusManager = LocalFocusManager.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val error = state.error?.asString()
-    LaunchedEffect(error) {
-        error?.let {
-            snackbarHostState.showSnackbar(
-                message = it,
-                withDismissAction = true
-            )
-            onAction(AddKeyManuallyAction.DismissError)
-        }
-    }
+    ShowErrorSnackbar(
+        error = state.error?.asString(),
+        snackbarHostState = snackbarHostState,
+        onDismiss = { onAction(AddKeyManuallyAction.DismissError) }
+    )
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },

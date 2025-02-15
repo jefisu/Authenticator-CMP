@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.optics.copy
 import arrow.optics.updateCopy
+import com.jefisu.authenticator.domain.model.QrCodeData
 import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.domain.usecase.UseCases
 import com.jefisu.authenticator.domain.util.onError
@@ -37,8 +38,9 @@ class TotpViewModel(
     private var _refreshTotpJob: Job? = null
 
     fun onAction(action: TotpAction) = when (action) {
-        is TotpAction.QrScannedFromImage -> addAccount(action.totpUri)
+        is TotpAction.QrScannedFromImage -> addAccount(action.bytes)
         is TotpAction.DeleteAccount -> deleteAccount(action.account)
+        TotpAction.DismissError -> dismissError()
         else -> Unit
     }
 
@@ -98,9 +100,9 @@ class TotpViewModel(
         }
     }
 
-    private fun addAccount(totpUri: String) {
+    private fun addAccount(bytes: ByteArray?) {
         viewModelScope.launch {
-            useCases.addAccount.execute(totpUri)
+            useCases.addAccount.execute(QrCodeData.ImageBytes(bytes))
                 .onSuccess {
                     _state.updateCopy { TotpState.error set null }
                 }
@@ -127,5 +129,9 @@ class TotpViewModel(
                     _state.updateCopy { TotpState.error set it.asUiText() }
                 }
         }
+    }
+
+    private fun dismissError() {
+        _state.updateCopy { TotpState.error set null }
     }
 }

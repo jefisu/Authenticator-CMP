@@ -26,6 +26,7 @@ ksp = "2.1.10-1.0.29"
 arrow = "2.0.1"
 androidx-room = "2.7.0-alpha13"
 androidx-sqlite = "2.5.0-SNAPSHOT"
+barcodeScanning = "17.3.0"
 
 [libraries]
 androidx-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -60,6 +61,7 @@ arrow-optics-compose = { module = "io.arrow-kt:arrow-optics-compose", version.re
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "androidx-sqlite" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
+barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

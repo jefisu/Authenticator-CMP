@@ -60,6 +60,7 @@ import authenticator.composeapp.generated.resources.ic_google_plus
 import authenticator.composeapp.generated.resources.ic_pen_field
 import authenticator.composeapp.generated.resources.ic_qr_code_scan
 import authenticator.composeapp.generated.resources.ic_search_image
+import com.jefisu.authenticator.core.presentation.components.ShowErrorSnackbar
 import com.jefisu.authenticator.core.presentation.sharedtransition.SharedTransitionKeys.FAB_EXPLODE_BOUNDS_KEY
 import com.jefisu.authenticator.core.presentation.sharedtransition.sharedTransition
 import com.jefisu.authenticator.core.presentation.theme.LightOptCodeColor
@@ -71,8 +72,12 @@ import com.jefisu.authenticator.presentation.totp.components.ArcExpandingFAB
 import com.jefisu.authenticator.presentation.totp.components.FABItem
 import com.jefisu.authenticator.presentation.totp.components.SwipeableItemWithActions
 import com.jefisu.authenticator.presentation.totp.components.TotpCodeItem
+import com.mohamedrejeb.calf.core.LocalPlatformContext
+import com.mohamedrejeb.calf.io.readByteArray
 import com.mohamedrejeb.calf.picker.FilePickerFileType
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -106,11 +111,16 @@ fun TotpScreenContent(
     val clipBoardManager = LocalClipboardManager.current
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val platformContext = LocalPlatformContext.current
 
     var fabIsExpanded by rememberSaveable { mutableStateOf(false) }
     val imagePicker = rememberFilePickerLauncher(
         type = FilePickerFileType.Image,
         onResult = { images ->
+            scope.launch(Dispatchers.IO) {
+                val bytes = images.firstOrNull()?.readByteArray(platformContext)
+                onAction(TotpAction.QrScannedFromImage(bytes))
+            }
         }
     )
     val fabsItems = remember {
@@ -131,6 +141,12 @@ fun TotpScreenContent(
     }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    ShowErrorSnackbar(
+        error = state.error?.asString(),
+        snackbarHostState = snackbarHostState,
+        onDismiss = { onAction(TotpAction.DismissError) }
+    )
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },

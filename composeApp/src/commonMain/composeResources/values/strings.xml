@@ -18,6 +18,8 @@
     <string name="invalid_login">Invalid login</string>
     <string name="invalid_secret">Invalid secret</string>
     <string name="exist_account">Account already exists.</string>
+    <string name="qr_extraction_failed">Failed to extract QR code</string>
+    <string name="invalid_parse_totp_uri">Error parsing TOTP code</string>
 
     <!-- Add Key Manually  -->
     <string name="new_account">New account</string>

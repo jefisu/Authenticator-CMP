@@ -56,17 +56,22 @@ import authenticator.composeapp.generated.resources.ic_gallery
 import authenticator.composeapp.generated.resources.invalid_qr_code
 import authenticator.composeapp.generated.resources.point_camera_at_qr_code
 import authenticator.composeapp.generated.resources.scan_qr_code
+import com.jefisu.authenticator.core.presentation.components.ShowErrorSnackbar
 import com.jefisu.authenticator.core.presentation.permission.PermissionDeniedScreen
 import com.jefisu.authenticator.core.presentation.permission.PermissionHandler
 import com.jefisu.authenticator.core.presentation.sharedtransition.SharedTransitionKeys.FAB_EXPLODE_BOUNDS_KEY
 import com.jefisu.authenticator.core.presentation.sharedtransition.sharedTransition
 import com.jefisu.authenticator.core.presentation.theme.LightOptCodeFinishingColor
 import com.jefisu.authenticator.core.presentation.theme.colors
+import com.mohamedrejeb.calf.core.LocalPlatformContext
+import com.mohamedrejeb.calf.io.readByteArray
 import com.mohamedrejeb.calf.permissions.ExperimentalPermissionsApi
 import com.mohamedrejeb.calf.permissions.Permission
 import com.mohamedrejeb.calf.permissions.rememberPermissionState
 import com.mohamedrejeb.calf.picker.FilePickerFileType
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -123,23 +128,23 @@ fun QrScannerScreenContent(
 ) {
     val errorMessage = stringResource(Res.string.invalid_qr_code)
     val snackbarHostState = remember { SnackbarHostState() }
-
+    val scope = rememberCoroutineScope()
+    val platformContext = LocalPlatformContext.current
     val imagePicker = rememberFilePickerLauncher(
         type = FilePickerFileType.Image,
         onResult = { images ->
+            scope.launch(Dispatchers.IO) {
+                val bytes = images.firstOrNull()?.readByteArray(platformContext)
+                onAction(QrScannerAction.QrScannedFromImage(bytes))
+            }
         }
     )
 
-    val error = state.error?.asString()
-    LaunchedEffect(error) {
-        error?.let {
-            snackbarHostState.showSnackbar(
-                message = it,
-                withDismissAction = true
-            )
-            onAction(QrScannerAction.DismissError)
-        }
-    }
+    ShowErrorSnackbar(
+        error = state.error?.asString(),
+        snackbarHostState = snackbarHostState,
+        onDismiss = { onAction(QrScannerAction.DismissError) }
+    )
 
     Scaffold(
         topBar = {

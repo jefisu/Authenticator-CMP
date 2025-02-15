@@ -41,6 +41,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.android)
             implementation(libs.koin.android)
+            implementation(libs.barcode.scanning)
         }
         appleMain.dependencies {
             implementation(libs.ktor.client.darwin)

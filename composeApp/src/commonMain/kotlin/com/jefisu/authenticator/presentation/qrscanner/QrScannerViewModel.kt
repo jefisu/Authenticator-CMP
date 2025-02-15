@@ -3,6 +3,7 @@ package com.jefisu.authenticator.presentation.qrscanner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.optics.updateCopy
+import com.jefisu.authenticator.domain.model.QrCodeData
 import com.jefisu.authenticator.domain.usecase.AddAccountUseCase
 import com.jefisu.authenticator.domain.util.onError
 import com.jefisu.authenticator.domain.util.onSuccess
@@ -21,16 +22,17 @@ class QrScannerViewModel(
 
     fun onAction(action: QrScannerAction) {
         when (action) {
-            is QrScannerAction.OnQrCodeScanned -> processQrCode(action.content)
+            is QrScannerAction.OnQrCodeScanned -> processQrCode(QrCodeData.TotpUri(action.uri))
+            is QrScannerAction.QrScannedFromImage -> processQrCode(QrCodeData.ImageBytes(action.bytes))
             is QrScannerAction.ToggleFlashlight -> toggleFlashlight()
             is QrScannerAction.DismissError -> dismissError()
             else -> Unit
         }
     }
 
-    private fun processQrCode(totpUri: String) {
+    private fun processQrCode(data: QrCodeData) {
         viewModelScope.launch {
-            addAccountUseCase.execute(totpUri)
+            addAccountUseCase.execute(data)
                 .onSuccess {
                     _state.updateCopy { QrScannerState.createdAccount set true }
                 }
