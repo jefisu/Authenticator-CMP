@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.composables.core.ModalBottomSheet
 import com.composables.core.ModalBottomSheetState
+import com.composables.core.ModalSheetProperties
 import com.composables.core.Scrim
 import com.composables.core.Sheet
 import com.jefisu.authenticator.core.presentation.theme.colors
@@ -22,12 +23,13 @@ import com.jefisu.authenticator.core.presentation.theme.colors
 fun BottomSheet(
     sheetState: ModalBottomSheetState,
     modifier: Modifier = Modifier,
+    properties: ModalSheetProperties = ModalSheetProperties(),
     sheetContent: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
     content()
 
-    ModalBottomSheet(state = sheetState) {
+    ModalBottomSheet(state = sheetState, properties = properties) {
         Scrim(
             enter = fadeIn(),
             exit = fadeOut()

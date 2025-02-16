@@ -60,6 +60,7 @@ import authenticator.composeapp.generated.resources.ic_google_plus
 import authenticator.composeapp.generated.resources.ic_pen_field
 import authenticator.composeapp.generated.resources.ic_qr_code_scan
 import authenticator.composeapp.generated.resources.ic_search_image
+import com.jefisu.authenticator.core.presentation.components.LoadingOverlayController
 import com.jefisu.authenticator.core.presentation.components.ShowErrorSnackbar
 import com.jefisu.authenticator.core.presentation.sharedtransition.SharedTransitionKeys.FAB_EXPLODE_BOUNDS_KEY
 import com.jefisu.authenticator.core.presentation.sharedtransition.sharedTransition
@@ -119,7 +120,10 @@ fun TotpScreenContent(
         onResult = { images ->
             scope.launch(Dispatchers.IO) {
                 val bytes = images.firstOrNull()?.readByteArray(platformContext)
-                onAction(TotpAction.QrScannedFromImage(bytes))
+                bytes?.let {
+                    LoadingOverlayController.showLoading()
+                    onAction(TotpAction.QrScannedFromImage(it))
+                }
             }
         }
     )

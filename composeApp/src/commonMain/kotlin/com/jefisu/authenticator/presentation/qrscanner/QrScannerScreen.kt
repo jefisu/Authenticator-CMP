@@ -56,6 +56,7 @@ import authenticator.composeapp.generated.resources.ic_gallery
 import authenticator.composeapp.generated.resources.invalid_qr_code
 import authenticator.composeapp.generated.resources.point_camera_at_qr_code
 import authenticator.composeapp.generated.resources.scan_qr_code
+import com.jefisu.authenticator.core.presentation.components.LoadingOverlayController
 import com.jefisu.authenticator.core.presentation.components.ShowErrorSnackbar
 import com.jefisu.authenticator.core.presentation.permission.PermissionDeniedScreen
 import com.jefisu.authenticator.core.presentation.permission.PermissionHandler
@@ -135,7 +136,10 @@ fun QrScannerScreenContent(
         onResult = { images ->
             scope.launch(Dispatchers.IO) {
                 val bytes = images.firstOrNull()?.readByteArray(platformContext)
-                onAction(QrScannerAction.QrScannedFromImage(bytes))
+                bytes?.let {
+                    LoadingOverlayController.showLoading()
+                    onAction(QrScannerAction.QrScannedFromImage(it))
+                }
             }
         }
     )

@@ -3,6 +3,7 @@ package com.jefisu.authenticator.presentation.qrscanner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.optics.updateCopy
+import com.jefisu.authenticator.core.presentation.components.LoadingOverlayController
 import com.jefisu.authenticator.domain.model.QrCodeData
 import com.jefisu.authenticator.domain.usecase.AddAccountUseCase
 import com.jefisu.authenticator.domain.util.onError
@@ -39,6 +40,7 @@ class QrScannerViewModel(
                 .onError { error ->
                     _state.updateCopy { QrScannerState.error set error.asUiText() }
                 }
+            LoadingOverlayController.hideLoading()
         }
     }
 

@@ -7,6 +7,7 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import coil3.compose.setSingletonImageLoaderFactory
+import com.jefisu.authenticator.core.presentation.components.LoadingOverlay
 import com.jefisu.authenticator.core.presentation.navigation.AppNavHost
 import com.jefisu.authenticator.core.presentation.sharedtransition.LocalSharedTransitionScope
 import com.jefisu.authenticator.core.presentation.theme.AppTheme
@@ -19,6 +20,8 @@ fun App() = AppTheme {
     setSingletonImageLoaderFactory {
         getDefaultImageLoader(it)
     }
+
+    LoadingOverlay()
 
     SharedTransitionLayout {
         CompositionLocalProvider(

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.optics.copy
 import arrow.optics.updateCopy
+import com.jefisu.authenticator.core.presentation.components.LoadingOverlayController
 import com.jefisu.authenticator.domain.model.QrCodeData
 import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.domain.usecase.UseCases
@@ -109,6 +110,7 @@ class TotpViewModel(
                 .onError {
                     _state.updateCopy { TotpState.error set it.asUiText() }
                 }
+            LoadingOverlayController.hideLoading()
         }
     }
 
