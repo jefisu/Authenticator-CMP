@@ -45,15 +45,12 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jefisu.authenticator.core.presentation.sharedtransition.LocalAnimatedContentScope
@@ -74,20 +71,17 @@ fun AnimatedTextFieldHint(
         ClearTextIconButton(onClick = { onTextChange("") })
     }
 ) {
-    val textFieldValue by rememberUpdatedState(
-        TextFieldValue(text, selection = TextRange(text.length))
-    )
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val showHintAbove by remember {
+    val showHintAbove by remember(text) {
         derivedStateOf {
-            isFocused || textFieldValue.text.isNotEmpty()
+            isFocused || text.isNotEmpty()
         }
     }
 
     BasicTextField(
-        value = textFieldValue,
-        onValueChange = { onTextChange(it.text) },
+        value = text,
+        onValueChange = { onTextChange(it) },
         modifier = modifier,
         interactionSource = interactionSource,
         singleLine = true,
