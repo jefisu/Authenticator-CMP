@@ -4,5 +4,6 @@ data class UseCases(
     val addAccount: AddAccountUseCase,
     val generateTotp: GenerateTotpUseCase,
     val getAllAccounts: GetAllAccountsUseCase,
-    val deleteAccount: DeleteAccountUseCase
+    val deleteAccount: DeleteAccountUseCase,
+    val searchAccounts: SearchAccountsUseCase
 )

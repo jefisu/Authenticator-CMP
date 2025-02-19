@@ -11,16 +11,22 @@ import com.jefisu.authenticator.domain.usecase.UseCases
 import com.jefisu.authenticator.domain.util.onError
 import com.jefisu.authenticator.domain.util.onSuccess
 import com.jefisu.authenticator.presentation.util.asUiText
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class TotpViewModel(
     private val useCases: UseCases
 ) : ViewModel() {
@@ -29,6 +35,7 @@ class TotpViewModel(
     val state = _state
         .onStart {
             loadTotpCodes()
+            searchTotpCodes()
         }
         .stateIn(
             viewModelScope,
@@ -42,6 +49,8 @@ class TotpViewModel(
         is TotpAction.QrScannedFromImage -> addAccount(action.bytes)
         is TotpAction.DeleteAccount -> deleteAccount(action.account)
         TotpAction.DismissError -> dismissError()
+        TotpAction.ToggleSearch -> toggleSearch()
+        is TotpAction.SearchQueryChanged -> setSearchQuery(action.query)
         else -> Unit
     }
 
@@ -135,5 +144,35 @@ class TotpViewModel(
 
     private fun dismissError() {
         _state.updateCopy { TotpState.error set null }
+    }
+
+    private fun toggleSearch() {
+        _state.update { state ->
+            state.copy { TotpState.isSearching set !state.isSearching }
+        }
+    }
+
+    private fun setSearchQuery(query: String) {
+        _state.updateCopy { TotpState.searchQuery set query }
+    }
+
+    private fun searchTotpCodes() {
+        viewModelScope.launch {
+            _state
+                .flatMapLatest { state ->
+                    if (!state.isSearching) _state.updateCopy { TotpState.searchQuery set "" }
+
+                    useCases.searchAccounts
+                        .execute(state.searchQuery)
+                        .map { accounts ->
+                            state.totpCodes.filter { totpCode ->
+                                accounts.any { it.id == totpCode.account.id }
+                            }
+                        }
+                }
+                .collect { searchResults ->
+                    _state.updateCopy { TotpState.searchResults set searchResults }
+                }
+        }
     }
 }

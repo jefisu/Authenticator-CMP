@@ -8,4 +8,6 @@ sealed interface TotpAction {
     data class QrScannedFromImage(val bytes: ByteArray?) : TotpAction
     data class DeleteAccount(val account: TwoFactorAuthAccount) : TotpAction
     data object DismissError : TotpAction
+    data object ToggleSearch : TotpAction
+    data class SearchQueryChanged(val query: String) : TotpAction
 }

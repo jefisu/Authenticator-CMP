@@ -8,7 +8,10 @@ import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 @optics
 data class TotpState(
     val totpCodes: List<TotpCode> = emptyList(),
-    val error: UiText? = null
+    val error: UiText? = null,
+    val searchQuery: String = "",
+    val isSearching: Boolean = false,
+    val searchResults: List<TotpCode> = emptyList()
 ) {
     companion object
 }

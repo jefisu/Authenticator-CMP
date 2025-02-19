@@ -6,6 +6,10 @@
 
 package com.jefisu.authenticator.presentation.totp
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -13,6 +17,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,12 +29,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -71,6 +82,7 @@ import com.jefisu.authenticator.core.util.getPlatform
 import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.presentation.totp.components.ArcExpandingFAB
 import com.jefisu.authenticator.presentation.totp.components.FABItem
+import com.jefisu.authenticator.presentation.totp.components.SearchField
 import com.jefisu.authenticator.presentation.totp.components.SwipeableItemWithActions
 import com.jefisu.authenticator.presentation.totp.components.TotpCodeItem
 import com.mohamedrejeb.calf.core.LocalPlatformContext
@@ -154,7 +166,13 @@ fun TotpScreenContent(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TotpTopAppBar(scrollBehavior) },
+        topBar = {
+            TotpTopAppBar(
+                state = state,
+                onAction = onAction,
+                scrollBehavior = scrollBehavior
+            )
+        },
         floatingActionButton = {
             TotpFloatingActionButton(
                 fabIsExpanded,
@@ -190,24 +208,75 @@ fun TotpScreenContent(
 }
 
 @Composable
-private fun TotpTopAppBar(scrollBehavior: TopAppBarScrollBehavior) {
-    TopAppBar(
-        title = { Text(stringResource(Res.string.app_name)) },
-        actions = {
-            IconButton(onClick = { }) {
-                Icon(
-                    imageVector = Icons.Rounded.MoreVert,
-                    contentDescription = "Menu",
-                    modifier = Modifier.rotate(90f)
-                )
+private fun TotpTopAppBar(
+    state: TotpState,
+    onAction: (TotpAction) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
+) {
+    val topAppBarContent: @Composable AnimatedContentScope.() -> Unit = {
+        TopAppBar(
+            title = { Text(stringResource(Res.string.app_name)) },
+            actions = {
+                IconButton(onClick = { onAction(TotpAction.ToggleSearch) }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Search,
+                        contentDescription = "Search",
+                    )
+                }
+                IconButton(onClick = { }) {
+                    Icon(
+                        imageVector = Icons.Rounded.MoreVert,
+                        contentDescription = "Menu",
+                        modifier = Modifier.rotate(90f)
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                actionIconContentColor = MaterialTheme.colors.iconColor,
+                titleContentColor = MaterialTheme.colors.textColor
+            ),
+            scrollBehavior = scrollBehavior,
+            modifier = Modifier.animateEnterExit()
+        )
+    }
+
+    val searchBar: @Composable AnimatedContentScope.() -> Unit = {
+        SearchField(
+            query = state.searchQuery,
+            onQueryChange = { onAction(TotpAction.SearchQueryChanged(it)) },
+            modifier = Modifier.animateEnterExit(
+                enter = slideInVertically() + fadeIn(),
+                exit = slideOutVertically() + fadeOut()
+            ),
+            leadingIcon = {
+                IconButton(
+                    onClick = { onAction(TotpAction.ToggleSearch) },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = LocalContentColor.current
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            actionIconContentColor = MaterialTheme.colors.iconColor,
-            titleContentColor = MaterialTheme.colors.textColor
-        ),
-        scrollBehavior = scrollBehavior
-    )
+        )
+    }
+
+
+    AnimatedContent(
+        targetState = state.isSearching,
+        transitionSpec = {
+            EnterTransition.None togetherWith ExitTransition.None
+        }
+    ) { isSearching ->
+        if (isSearching) {
+            searchBar()
+        } else {
+            topAppBarContent()
+        }
+    }
 }
 
 @Composable
@@ -260,7 +329,7 @@ private fun TotpCodeList(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(
-            items = state.totpCodes,
+            items = state.searchResults.takeIf { state.isSearching } ?: state.totpCodes,
             key = { it.account.id!! }
         ) { totpCode ->
             var isRevealed by remember { mutableStateOf(false) }

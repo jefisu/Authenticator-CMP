@@ -39,4 +39,7 @@
     <string name="not_defined">Not defined</string>
 
     <string name="please_wait">Please wait...</string>
+
+    <!-- Search   -->
+    <string name="search_hint">Search by name, login, or issuer</string>
 </resources>

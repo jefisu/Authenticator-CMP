@@ -9,6 +9,7 @@ import com.jefisu.authenticator.domain.usecase.AddAccountUseCase
 import com.jefisu.authenticator.domain.usecase.DeleteAccountUseCase
 import com.jefisu.authenticator.domain.usecase.GenerateTotpUseCase
 import com.jefisu.authenticator.domain.usecase.GetAllAccountsUseCase
+import com.jefisu.authenticator.domain.usecase.SearchAccountsUseCase
 import com.jefisu.authenticator.domain.usecase.UseCases
 import com.jefisu.authenticator.platform.TotpQrScanner
 import com.jefisu.authenticator.presentation.addkeymanually.AddKeyManuallyViewModel
@@ -29,6 +30,7 @@ val sharedModule = module {
     singleOf(::GetAllAccountsUseCase)
     singleOf(::GenerateTotpUseCase)
     singleOf(::DeleteAccountUseCase)
+    singleOf(::SearchAccountsUseCase)
     singleOf(::UseCases)
 
     viewModelOf(::TotpViewModel)
