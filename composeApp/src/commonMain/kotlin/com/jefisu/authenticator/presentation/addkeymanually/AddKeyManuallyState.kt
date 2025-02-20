@@ -13,7 +13,8 @@ data class AddKeyManuallyState(
     val settingsExpanded: Boolean = false,
     val searchService: String = "",
     val error: UiText? = null,
-    val saved: Boolean = false
+    val saved: Boolean = false,
+    val dataLoaded: Boolean = false
 ) {
     companion object
 }

@@ -77,16 +77,18 @@ fun AddKeyManuallyScreen(
         }
     }
 
-    AddKeyManuallyScreenContent(
-        state = state,
-        onAction = { action ->
-            if (action is AddKeyManuallyAction.NavigateBack) {
-                onNavigateBack()
-                return@AddKeyManuallyScreenContent
+    if (state.dataLoaded) {
+        AddKeyManuallyScreenContent(
+            state = state,
+            onAction = { action ->
+                if (action is AddKeyManuallyAction.NavigateBack) {
+                    onNavigateBack()
+                    return@AddKeyManuallyScreenContent
+                }
+                viewModel.onAction(action)
             }
-            viewModel.onAction(action)
-        }
-    )
+        )
+    }
 }
 
 @Composable

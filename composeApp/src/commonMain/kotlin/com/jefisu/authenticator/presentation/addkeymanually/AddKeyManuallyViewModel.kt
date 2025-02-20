@@ -162,6 +162,7 @@ class AddKeyManuallyViewModel(
                 }
             }
         }
+        _state.updateCopy { AddKeyManuallyState.dataLoaded set true }
     }
 
     private fun configDiffDetected() = with(_state.value.account) {
