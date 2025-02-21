@@ -56,8 +56,8 @@ import com.jefisu.authenticator.core.presentation.components.AnimatedTextFieldHi
 import com.jefisu.authenticator.core.presentation.components.BottomSheet
 import com.jefisu.authenticator.core.presentation.theme.colors
 import com.jefisu.authenticator.domain.model.Issuer
-import com.jefisu.authenticator.domain.util.DefaultIssuer
 import com.jefisu.authenticator.presentation.util.getLogoUrl
+import com.jefisu.authenticator.presentation.util.url
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -142,7 +142,7 @@ private fun ServicesGrid(
 ) {
     val searchResultIssuers by remember(searchText) {
         derivedStateOf {
-            DefaultIssuer.entries.filter {
+            Issuer.entries.filter {
                 it.identifier.contains(searchText, true)
             }
         }

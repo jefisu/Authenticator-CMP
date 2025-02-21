@@ -3,6 +3,7 @@ package com.jefisu.authenticator.domain.util
 import com.jefisu.authenticator.core.util.TotpConstants.CODE_LENGTH
 import com.jefisu.authenticator.core.util.TotpConstants.REFRESH_INTERVAL
 import com.jefisu.authenticator.domain.model.Algorithm
+import com.jefisu.authenticator.domain.model.Issuer
 import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 
 fun parseTotpUri(uri: String): TwoFactorAuthAccount? {
@@ -25,7 +26,7 @@ fun parseTotpUri(uri: String): TwoFactorAuthAccount? {
     val digits = digitsRegex.find(uri)?.groupValues?.get(1)?.toIntOrNull() ?: CODE_LENGTH
     val period = periodRegex.find(uri)?.groupValues?.get(1)?.toIntOrNull() ?: REFRESH_INTERVAL
 
-    val issuer = DefaultIssuer.getIssuer(accountOrigin)
+    val issuer = Issuer.findByIdentifier(accountOrigin)
     return TwoFactorAuthAccount(
         name = issuer?.identifier.orEmpty(),
         issuer = issuer,

@@ -1,11 +1,31 @@
 package com.jefisu.authenticator.domain.model
 
-interface Issuer {
-    val identifier: String
-    val url: String
-}
+import kotlinx.serialization.Serializable
 
-data class CustomIssuer(
-    override val identifier: String,
-    override val url: String
-) : Issuer
+@Serializable
+enum class Issuer(
+    val identifier: String
+) {
+    GOOGLE("Google"),
+    FACEBOOK("Facebook"),
+    MICROSOFT("Microsoft"),
+    APPLE("Apple"),
+    TWITTER("Twitter"),
+    GITHUB("GitHub"),
+    AMAZON("Amazon"),
+    SLACK("Slack"),
+    DISCORD("Discord"),
+    YAHOO("Yahoo"),
+    TUMBLR("Tumblr"),
+    DROPBOX("Dropbox"),
+    BITBUCKET("Bitbucket"),
+    GITLAB("GitLab"),
+    REDDIT("Reddit"),
+    DIGG("Digg");
+
+    companion object {
+        fun findByIdentifier(identifier: String) = entries.find {
+            identifier.contains(it.identifier, ignoreCase = true)
+        }
+    }
+}

@@ -1,29 +1,16 @@
 package com.jefisu.authenticator.data.database
 
 import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
+import kotlinx.serialization.json.Json
 
-fun AccountEntity.toAccount(): TwoFactorAuthAccount {
-    return TwoFactorAuthAccount(
-        id = id,
-        login = login,
-        secret = secret,
-        issuer = issuer,
-        refreshPeriod = refreshPeriod,
-        digitCount = digitCount,
-        name = name,
-        algorithm = algorithm
-    )
+fun AccountEntity.toAccount(decryptedJson: String): TwoFactorAuthAccount {
+    val account = Json.decodeFromString<TwoFactorAuthAccount>(decryptedJson)
+    return account.copy(id = id)
 }
 
-fun TwoFactorAuthAccount.toAccountEntity(): AccountEntity {
+fun TwoFactorAuthAccount.toAccountEntity(encryptedBase64: String): AccountEntity {
     return AccountEntity(
         id = id,
-        login = login,
-        secret = secret,
-        issuer = issuer,
-        refreshPeriod = refreshPeriod,
-        digitCount = digitCount,
-        name = name,
-        algorithm = algorithm
+        encryptedBase64 = encryptedBase64
     )
 }

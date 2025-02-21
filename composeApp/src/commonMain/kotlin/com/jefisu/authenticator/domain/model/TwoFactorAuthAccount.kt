@@ -1,8 +1,10 @@
 package com.jefisu.authenticator.domain.model
 
 import arrow.optics.optics
+import kotlinx.serialization.Serializable
 
 @optics
+@Serializable
 data class TwoFactorAuthAccount(
     val name: String,
     val login: String,

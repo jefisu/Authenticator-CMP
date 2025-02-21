@@ -52,6 +52,7 @@ import com.jefisu.authenticator.core.presentation.theme.colors
 import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.presentation.totp.TotpCode
 import com.jefisu.authenticator.presentation.util.getLogoUrl
+import com.jefisu.authenticator.presentation.util.url
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

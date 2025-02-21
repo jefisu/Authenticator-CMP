@@ -1,5 +1,8 @@
 package com.jefisu.authenticator.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class Algorithm(
     val length: Int,
 ) {

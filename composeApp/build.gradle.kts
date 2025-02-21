@@ -42,9 +42,11 @@ kotlin {
             implementation(libs.ktor.client.android)
             implementation(libs.koin.android)
             implementation(libs.barcode.scanning)
+            implementation(libs.cryptography.provider.android)
         }
         appleMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.cryptography.provider.openssl3.prebuilt)
         }
         commonMain {
             kotlin {
@@ -78,6 +80,8 @@ kotlin {
                 implementation(libs.calf.file.picker)
                 implementation(libs.androidx.sqlite.bundled)
                 implementation(libs.androidx.room.runtime)
+                implementation(libs.cryptography.core)
+                implementation(libs.multiplatform.settings.no.arg)
             }
         }
         commonTest.dependencies {

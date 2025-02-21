@@ -15,7 +15,6 @@ import com.jefisu.authenticator.domain.model.name
 import com.jefisu.authenticator.domain.model.refreshPeriod
 import com.jefisu.authenticator.domain.model.secret
 import com.jefisu.authenticator.domain.usecase.UseCases
-import com.jefisu.authenticator.domain.util.DefaultIssuer
 import com.jefisu.authenticator.domain.util.onError
 import com.jefisu.authenticator.domain.util.onSuccess
 import com.jefisu.authenticator.presentation.util.asUiText
@@ -64,7 +63,7 @@ class AddKeyManuallyViewModel(
         _state.updateCopy { AddKeyManuallyState.account.name set name }
 
         if (name.isNotEmpty()) {
-            setIssuer(DefaultIssuer.getIssuer(name))
+            setIssuer(Issuer.findByIdentifier(name))
         } else {
             setIssuer(null)
         }
