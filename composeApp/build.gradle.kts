@@ -137,6 +137,11 @@ ktlint {
     outputToConsole.set(true)
     enableExperimentalRules.set(true)
     ignoreFailures.set(true)
+
+    filter {
+        exclude("**/build/**")
+        include("**/kotlin/**")
+    }
 }
 
 room {
