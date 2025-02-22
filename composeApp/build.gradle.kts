@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -138,12 +139,8 @@ ktlint {
     ignoreFailures.set(true)
 }
 
-tasks.withType<KotlinCompile>().all {
-    if (name != "kspCommonMainKotlinMetadata") {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
-}
-
 room {
     schemaDirectory("$projectDir/schemas")
 }
+
+tasks.build.dependsOn("kspCommonMainMetadata")
