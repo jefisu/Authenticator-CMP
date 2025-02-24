@@ -224,7 +224,8 @@ private fun TotpTopAppBar(
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 actionIconContentColor = MaterialTheme.colors.iconColor,
-                titleContentColor = MaterialTheme.colors.textColor
+                titleContentColor = MaterialTheme.colors.textColor,
+                scrolledContainerColor = MaterialTheme.colors.cardColor
             ),
             scrollBehavior = scrollBehavior,
             modifier = Modifier.animateEnterExit()
