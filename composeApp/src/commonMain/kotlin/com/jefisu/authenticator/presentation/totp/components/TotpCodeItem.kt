@@ -236,8 +236,8 @@ private fun TotpCode(
 
         val groupCount = numDigits / 3
         val totalWidth = (otpSizePx * numDigits) +
-                (groupCount * spaceLarge) +
-                ((numDigits - groupCount - 1) * spaceSmall)
+            (groupCount * spaceLarge) +
+            ((numDigits - groupCount - 1) * spaceSmall)
 
         val scaleFactor = if (totalWidth > size.width) 0.8f else 1f
         val otpCenter = Offset(otpSizePx / 2, otpSizePx / 2)

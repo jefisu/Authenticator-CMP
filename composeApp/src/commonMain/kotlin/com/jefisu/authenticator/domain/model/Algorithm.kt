@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class Algorithm(
-    val length: Int,
+    val length: Int
 ) {
     SHA1(length = 32),
     SHA256(length = 52),

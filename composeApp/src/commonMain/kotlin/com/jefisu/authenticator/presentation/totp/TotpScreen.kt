@@ -218,7 +218,7 @@ private fun TotpTopAppBar(
                 IconButton(onClick = { onAction(TotpAction.ToggleSearch) }) {
                     Icon(
                         imageVector = Icons.Rounded.Search,
-                        contentDescription = "Search",
+                        contentDescription = "Search"
                     )
                 }
             },
@@ -255,7 +255,6 @@ private fun TotpTopAppBar(
             }
         )
     }
-
 
     AnimatedContent(
         targetState = state.isSearching,

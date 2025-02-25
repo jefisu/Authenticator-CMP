@@ -2,7 +2,6 @@ package com.jefisu.authenticator.presentation.totp
 
 import arrow.optics.optics
 import com.jefisu.authenticator.core.presentation.util.UiText
-import com.jefisu.authenticator.core.util.TotpConstants
 import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 
 @optics

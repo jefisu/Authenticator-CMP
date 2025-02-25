@@ -12,7 +12,7 @@ import com.jefisu.authenticator.platform.TotpQrScanner
 
 class AddAccountUseCase(
     private val repository: AccountRepository,
-    private val qrScanner: TotpQrScanner,
+    private val qrScanner: TotpQrScanner
 ) {
     suspend fun execute(data: QrCodeData): Result<Unit, Error> {
         val totpUri = when (data) {
@@ -33,7 +33,6 @@ class AddAccountUseCase(
 
         return repository.addAccount(extractedAccount)
     }
-
 
     suspend fun execute(account: TwoFactorAuthAccount): Result<Unit, Error> {
         val validationResult = accountRulesValidator.validate(account)

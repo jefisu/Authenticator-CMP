@@ -129,8 +129,8 @@ class AddKeyManuallyViewModel(
             )
             fieldComparisons.any { (new, old) -> new != old }
         } ?: AddKeyManuallyState().let { initialState ->
-            account.login != initialState.account.login
-                    && account.secret != initialState.account.secret
+            account.login != initialState.account.login &&
+                account.secret != initialState.account.secret
         }
         _state.updateCopy { AddKeyManuallyState.unsavedChanges set hasUnsavedChanges }
     }
@@ -175,5 +175,4 @@ class AddKeyManuallyViewModel(
         }
         _state.updateCopy { AddKeyManuallyState.settingsExpanded set isDifferentFromDefault }
     }
-
 }

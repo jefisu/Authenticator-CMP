@@ -58,11 +58,17 @@ fun SwipeableItemWithActions(
     }
 
     val maxStartOffset =
-        if (direction == SwipeDirection.START_TO_END || direction == SwipeDirection.BOTH)
-            startActionsWidth else 0f
+        if (direction == SwipeDirection.START_TO_END || direction == SwipeDirection.BOTH) {
+            startActionsWidth
+        } else {
+            0f
+        }
     val maxEndOffset =
-        if (direction == SwipeDirection.END_TO_START || direction == SwipeDirection.BOTH)
-            endActionsWidth else 0f
+        if (direction == SwipeDirection.END_TO_START || direction == SwipeDirection.BOTH) {
+            endActionsWidth
+        } else {
+            0f
+        }
 
     LaunchedEffect(isRevealed) {
         offset.animateTo(0f)

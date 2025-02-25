@@ -20,8 +20,8 @@ class SearchAccountsUseCase(
 
     private fun TwoFactorAuthAccount.containsQuery(query: String): Boolean {
         return name.containsIgnoreCase(query) ||
-                login.containsIgnoreCase(query) ||
-                issuer?.identifier?.containsIgnoreCase(query) ?: false
+            login.containsIgnoreCase(query) ||
+            issuer?.identifier?.containsIgnoreCase(query) ?: false
     }
 
     private fun String.containsIgnoreCase(other: String): Boolean {

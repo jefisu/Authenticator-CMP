@@ -44,7 +44,7 @@ fun SearchField(
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
+    leadingIcon: (@Composable () -> Unit)? = null
 ) {
     val textColor = MaterialTheme.colors.textColor
     val inactiveTextColor = textColor.copy(alpha = .4f)
@@ -54,7 +54,7 @@ fun SearchField(
         AnimatedVisibility(
             visible = query.isNotEmpty(),
             enter = fadeIn() + slideInHorizontally { it / 3 },
-            exit = fadeOut() + slideOutHorizontally { it / 3 },
+            exit = fadeOut() + slideOutHorizontally { it / 3 }
         ) {
             IconButton(
                 onClick = { onQueryChange("") },
@@ -64,7 +64,7 @@ fun SearchField(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Close,
-                    contentDescription = "Clear text",
+                    contentDescription = "Clear text"
                 )
             }
         }

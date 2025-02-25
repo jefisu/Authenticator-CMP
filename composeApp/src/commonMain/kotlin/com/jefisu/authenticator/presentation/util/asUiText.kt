@@ -2,9 +2,9 @@ package com.jefisu.authenticator.presentation.util
 
 import authenticator.composeapp.generated.resources.Res
 import authenticator.composeapp.generated.resources.invalid_login
+import authenticator.composeapp.generated.resources.invalid_parse_totp_uri
 import authenticator.composeapp.generated.resources.invalid_qr_code
 import authenticator.composeapp.generated.resources.invalid_secret
-import authenticator.composeapp.generated.resources.invalid_parse_totp_uri
 import authenticator.composeapp.generated.resources.qr_extraction_failed
 import authenticator.composeapp.generated.resources.unknown_error
 import com.jefisu.authenticator.core.presentation.util.UiText

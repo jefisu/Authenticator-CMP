@@ -156,7 +156,7 @@ private fun InputBox(
         AnimatedVisibility(
             visible = text.isNotEmpty(),
             enter = fadeIn() + slideInHorizontally { it / 3 },
-            exit = fadeOut() + slideOutHorizontally { it / 3 },
+            exit = fadeOut() + slideOutHorizontally { it / 3 }
         ) {
             iconTrailing?.invoke()
         }

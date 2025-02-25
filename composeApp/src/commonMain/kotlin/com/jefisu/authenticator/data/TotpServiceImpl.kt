@@ -1,7 +1,7 @@
 package com.jefisu.authenticator.data
 
-import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.domain.model.Algorithm
+import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.domain.service.TotpService
 import diglol.crypto.Hmac
 import diglol.crypto.otp.Totp

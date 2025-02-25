@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -67,7 +66,9 @@ class TotpViewModel(
                             code = useCases.generateTotp.execute(newAccount),
                             remainingTime = newAccount.refreshPeriod
                         )
-                    } else null
+                    } else {
+                        null
+                    }
                 }
 
                 val filteredCurrent = currentTotpCodes.filter { current ->
@@ -79,7 +80,6 @@ class TotpViewModel(
             }
         }
     }
-
 
     private fun refreshTotpCode() {
         _refreshTotpJob?.cancel()

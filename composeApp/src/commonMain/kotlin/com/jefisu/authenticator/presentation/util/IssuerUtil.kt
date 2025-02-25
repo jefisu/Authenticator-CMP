@@ -2,7 +2,7 @@ package com.jefisu.authenticator.presentation.util
 
 import com.jefisu.authenticator.domain.model.Issuer
 
-val Issuer.url get() = when(this) {
+val Issuer.url get() = when (this) {
     Issuer.GOOGLE -> "https://accounts.google.com"
     Issuer.FACEBOOK -> "https://facebook.com"
     Issuer.MICROSOFT -> "https://microsoft.com"
