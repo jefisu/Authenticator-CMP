@@ -12,6 +12,7 @@ import com.jefisu.authenticator.domain.usecase.GetAllAccountsUseCase
 import com.jefisu.authenticator.domain.usecase.SearchAccountsUseCase
 import com.jefisu.authenticator.domain.usecase.UseCases
 import com.jefisu.authenticator.platform.TotpQrScanner
+import com.jefisu.authenticator.platform.TotpQrScannerImpl
 import com.jefisu.authenticator.presentation.addkeymanually.AddKeyManuallyViewModel
 import com.jefisu.authenticator.presentation.qrscanner.QrScannerViewModel
 import com.jefisu.authenticator.presentation.totp.TotpViewModel
@@ -21,7 +22,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val sharedModule = module {
-    singleOf(::TotpQrScanner)
+    singleOf(::TotpQrScannerImpl).bind<TotpQrScanner>()
     singleOf(::getAccountDatabase)
     singleOf(::AccountRepositoryImpl).bind<AccountRepository>()
     singleOf(::TotpServiceImpl).bind<TotpService>()
