@@ -6,13 +6,14 @@ import com.jefisu.authenticator.domain.repository.AccountRepository
 import com.jefisu.authenticator.domain.util.Error
 import com.jefisu.authenticator.domain.util.Result
 import com.jefisu.authenticator.domain.util.parseTotpUri
+import com.jefisu.authenticator.domain.validation.NewAccountValidator
 import com.jefisu.authenticator.domain.validation.QrValidationError
-import com.jefisu.authenticator.domain.validation.accountRulesValidator
 import com.jefisu.authenticator.platform.TotpQrScanner
 
 class AddAccountUseCase(
     private val repository: AccountRepository,
-    private val qrScanner: TotpQrScanner
+    private val qrScanner: TotpQrScanner,
+    private val rulesValidator: NewAccountValidator
 ) {
     suspend fun execute(data: QrCodeData): Result<Unit, Error> {
         val totpUri = when (data) {
@@ -26,7 +27,7 @@ class AddAccountUseCase(
         val extractedAccount = parseTotpUri(totpUri)
             ?: return Result.Error(QrValidationError.INVALID_PARSE_TOTP_URI)
 
-        val validation = accountRulesValidator.validate(extractedAccount)
+        val validation = rulesValidator.validate(extractedAccount)
         validation
             .takeIf { !it.sucessfully }
             ?.run { return Result.Error(error!!) }
@@ -35,7 +36,7 @@ class AddAccountUseCase(
     }
 
     suspend fun execute(account: TwoFactorAuthAccount): Result<Unit, Error> {
-        val validationResult = accountRulesValidator.validate(account)
+        val validationResult = rulesValidator.validate(account)
         validationResult
             .takeIf { !it.sucessfully }
             ?.run { return Result.Error(error!!) }

@@ -3,11 +3,13 @@ package com.jefisu.authenticator.domain.validation
 import com.jefisu.authenticator.domain.model.TwoFactorAuthAccount
 import com.jefisu.authenticator.domain.util.Error
 
-val accountRulesValidator = Validator<TwoFactorAuthAccount> { account ->
-    validationRules
-        .firstOrNull { !it.validate(account) }
-        ?.let { rule -> ValidationResult(sucessfully = false, error = rule.error) }
-        ?: ValidationResult(sucessfully = true)
+class NewAccountValidator : Validator<TwoFactorAuthAccount> {
+    override fun validate(data: TwoFactorAuthAccount): ValidationResult {
+        return validationRules
+            .firstOrNull { !it.validate(data) }
+            ?.let { rule -> ValidationResult(sucessfully = false, error = rule.error) }
+            ?: ValidationResult(sucessfully = true)
+    }
 }
 
 enum class AccountValidationError : Error {
