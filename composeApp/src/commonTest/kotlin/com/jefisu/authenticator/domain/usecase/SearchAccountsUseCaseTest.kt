@@ -21,7 +21,7 @@ class SearchAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute with matching name returns matching accounts`() = runTest {
+    fun executeWithMatchingNameReturnsMatchingAccounts() = runTest {
         val account = TestUtil.VALID_ACCOUNT.copy(name = "TestAccount")
         repository.addAccount(account)
 
@@ -33,7 +33,7 @@ class SearchAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute with matching login returns matching accounts`() = runTest {
+    fun executeWithMatchingLoginReturnsMatchingAccounts() = runTest {
         val account = TestUtil.VALID_ACCOUNT.copy(login = "user@example.com")
         repository.addAccount(account)
 
@@ -45,7 +45,7 @@ class SearchAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute with matching issuer returns matching accounts`() = runTest {
+    fun executeWithMatchingIssuerReturnsMatchingAccounts() = runTest {
         val account = TestUtil.VALID_ACCOUNT.copy(issuer = Issuer.GOOGLE)
         repository.addAccount(account)
 
@@ -57,7 +57,7 @@ class SearchAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute with case-insensitive query returns matching accounts`() = runTest {
+    fun executeWithCaseInsensitiveQueryReturnsMatchingAccounts() = runTest {
         val account = TestUtil.VALID_ACCOUNT.copy(name = "TestAccount")
         repository.addAccount(account)
 
@@ -69,7 +69,7 @@ class SearchAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute with empty query returns empty list`() = runTest {
+    fun executeWithEmptyQueryReturnsEmptyList() = runTest {
         val account = TestUtil.VALID_ACCOUNT
         repository.addAccount(account)
 
@@ -81,7 +81,7 @@ class SearchAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute with non-matching query returns empty list`() = runTest {
+    fun executeWithNonMatchingQueryReturnsEmptyList() = runTest {
         val account = TestUtil.VALID_ACCOUNT.copy(name = "TestAccount")
         repository.addAccount(account)
 
@@ -93,7 +93,7 @@ class SearchAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute with multiple updates returns filtered emissions`() = runTest {
+    fun executeWithMultipleUpdatesReturnsFilteredEmissions() = runTest {
         val account1 = TestUtil.VALID_ACCOUNT.copy(name = "TestAccount1")
         val account2 = TestUtil.VALID_ACCOUNT.copy(name = "TestAccount2")
 
@@ -114,7 +114,7 @@ class SearchAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute with special characters returns matching accounts`() = runTest {
+    fun executeWithSpecialCharactersReturnsMatchingAccounts() = runTest {
         val account = TestUtil.VALID_ACCOUNT.copy(name = "Test@Account#1")
         repository.addAccount(account)
 
@@ -126,7 +126,7 @@ class SearchAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute with null issuer returns matching accounts`() = runTest {
+    fun executeWithNullIssuerReturnsMatchingAccounts() = runTest {
         val account = TestUtil.VALID_ACCOUNT.copy(name = "TestAccount", issuer = null)
         repository.addAccount(account)
 
@@ -138,7 +138,7 @@ class SearchAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute with whitespace query returns empty list`() = runTest {
+    fun executeWithWhitespaceQueryReturnsEmptyList() = runTest {
         val account = TestUtil.VALID_ACCOUNT.copy(name = "TestAccount")
         repository.addAccount(account)
 

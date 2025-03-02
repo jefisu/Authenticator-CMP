@@ -20,7 +20,7 @@ class GenerateTotpUseCaseTest {
     }
 
     @Test
-    fun `execute with valid account returns TOTP code`() = runTest {
+    fun executeWithValidAccountReturnsTotpCode() = runTest {
         val account = TestUtil.VALID_ACCOUNT
         service.setNextCode("123456")
         val result = generateTotpUseCase.execute(account)
@@ -28,7 +28,7 @@ class GenerateTotpUseCaseTest {
     }
 
     @Test
-    fun `execute with valid account when service fails throws exception`() = runTest {
+    fun executeWithValidAccountWhenServiceFailsThrowsException() = runTest {
         val account = TestUtil.VALID_ACCOUNT
         service.setNextCallToFail()
         assertFailsWith<IllegalArgumentException> {
@@ -37,7 +37,7 @@ class GenerateTotpUseCaseTest {
     }
 
     @Test
-    fun `execute with account with invalid secret throws exception`() = runTest {
+    fun executeWithAccountWithInvalidSecretThrowsException() = runTest {
         val invalidAccount = TestUtil.VALID_ACCOUNT.copy(secret = "INVALID_SECRET")
         service.setNextCallToFail()
         assertFailsWith<IllegalArgumentException> {
@@ -46,14 +46,13 @@ class GenerateTotpUseCaseTest {
     }
 
     @Test
-    fun `execute multiple times with same account returns same TOTP code when code is valid`() =
-        runTest {
-            val account = TestUtil.VALID_ACCOUNT
-            val code = "345678"
-            service.setNextCode(code)
-            repeat(3) {
-                val result = generateTotpUseCase.execute(account)
-                assertThat(result).isEqualTo(code)
-            }
+    fun executeMultipleTimesWithSameAccountReturnsSameTotpCodeWhenCodeIsValid() = runTest {
+        val account = TestUtil.VALID_ACCOUNT
+        val code = "345678"
+        service.setNextCode(code)
+        repeat(3) {
+            val result = generateTotpUseCase.execute(account)
+            assertThat(result).isEqualTo(code)
         }
+    }
 }
