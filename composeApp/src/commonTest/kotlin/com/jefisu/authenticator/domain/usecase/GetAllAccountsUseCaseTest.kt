@@ -21,7 +21,7 @@ class GetAllAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute returns flow emitting list of accounts when repository has data`() = runTest {
+    fun executeReturnsFlowEmittingListOfAccountsWhenRepositoryHasData() = runTest {
         val account1 = TestUtil.VALID_ACCOUNT
         val account2 = account1.copy(secret = "DIFFERENT_SECRET")
         val accounts = listOf(account1, account2).onEach {
@@ -37,7 +37,7 @@ class GetAllAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute returns flow emitting empty list when repository has no accounts`() = runTest {
+    fun executeReturnsFlowEmittingEmptyListWhenRepositoryHasNoAccounts() = runTest {
         getAllAccountsUseCase.execute().test {
             assertThat(awaitItem()).isEmpty()
             cancelAndIgnoreRemainingEvents()
@@ -45,7 +45,7 @@ class GetAllAccountsUseCaseTest {
     }
 
     @Test
-    fun `execute called multiple times returns same flow instance`() = runTest {
+    fun executeCalledMultipleTimesReturnsSameFlowInstance() = runTest {
         val account = TestUtil.VALID_ACCOUNT
         repository.addAccount(account)
 

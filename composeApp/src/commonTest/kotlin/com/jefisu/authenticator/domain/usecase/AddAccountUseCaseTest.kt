@@ -38,19 +38,19 @@ class AddAccountUseCaseTest {
 
     // TOTP URI Tests
     @Test
-    fun `execute with valid TOTP URI returns success`() = runTest {
+    fun executeWithValidTotpUriReturnsSuccess() = runTest {
         val result = addAccountUseCase.execute(QrCodeData.TotpUri(TestUtil.VALID_TOTP_URI))
         assertSuccessResult(result, Unit)
     }
 
     @Test
-    fun `execute with invalid TOTP URI returns parsing error`() = runTest {
+    fun executeWithInvalidTotpUriReturnsParsingError() = runTest {
         val result = addAccountUseCase.execute(QrCodeData.TotpUri(TestUtil.INVALID_TOTP_URI))
         assertErrorResult(result, QrValidationError.INVALID_PARSE_TOTP_URI)
     }
 
     @Test
-    fun `execute with valid TOTP URI when repository fails returns unknown error`() = runTest {
+    fun executeWithValidTotpUriWhenRepositoryFailsReturnsUnknownError() = runTest {
         repository.forceNextOperationFailure()
         val result = addAccountUseCase.execute(QrCodeData.TotpUri(TestUtil.VALID_TOTP_URI))
         assertErrorResult(result, Error.Unknown)
@@ -58,34 +58,34 @@ class AddAccountUseCaseTest {
 
     // QR Code Tests
     @Test
-    fun `execute with valid QR bytes returns success`() = runTest {
+    fun executeWithValidQrBytesReturnsSuccess() = runTest {
         qrScanner.shouldReturn(TestUtil.VALID_TOTP_URI)
         val result = addAccountUseCase.execute(QrCodeData.ImageBytes(TestUtil.VALID_QR_BYTES))
         assertSuccessResult(result, Unit)
     }
 
     @Test
-    fun `execute with null QR code bytes returns invalid QR error`() = runTest {
+    fun executeWithNullQrCodeBytesReturnsInvalidQrError() = runTest {
         val result = addAccountUseCase.execute(QrCodeData.ImageBytes(bytes = null))
         assertErrorResult(result, QrValidationError.INVALID_QR_CODE)
     }
 
     @Test
-    fun `execute with invalid QR bytes returns extraction failed error`() = runTest {
+    fun executeWithInvalidQrBytesReturnsExtractionFailedError() = runTest {
         qrScanner.shouldReturn(null)
         val result = addAccountUseCase.execute(QrCodeData.ImageBytes(TestUtil.INVALID_QR_BYTES))
         assertErrorResult(result, QrValidationError.QR_EXTRACTION_FAILED)
     }
 
     @Test
-    fun `execute with empty QR bytes returns extraction failed error`() = runTest {
+    fun executeWithEmptyQrBytesReturnsExtractionFailedError() = runTest {
         qrScanner.shouldReturn(null)
         val result = addAccountUseCase.execute(QrCodeData.ImageBytes(TestUtil.EMPTY_QR_BYTES))
         assertErrorResult(result, QrValidationError.QR_EXTRACTION_FAILED)
     }
 
     @Test
-    fun `execute with excessively large QR bytes returns extraction failed error`() = runTest {
+    fun executeWithExcessivelyLargeQrBytesReturnsExtractionFailedError() = runTest {
         qrScanner.shouldReturn(null)
         val largeBytes = ByteArray(10_000_000) { 0 }
         val result = addAccountUseCase.execute(QrCodeData.ImageBytes(largeBytes))
@@ -93,7 +93,7 @@ class AddAccountUseCaseTest {
     }
 
     @Test
-    fun `execute with QR bytes extracting invalid URI returns parsing error`() = runTest {
+    fun executeWithQrBytesExtractingInvalidUriReturnsParsingError() = runTest {
         qrScanner.shouldReturn(TestUtil.INVALID_TOTP_URI)
         val result = addAccountUseCase.execute(QrCodeData.ImageBytes(TestUtil.VALID_QR_BYTES))
         assertErrorResult(result, QrValidationError.INVALID_PARSE_TOTP_URI)
@@ -101,27 +101,27 @@ class AddAccountUseCaseTest {
 
     // Account Tests
     @Test
-    fun `execute with valid account returns success`() = runTest {
+    fun executeWithValidAccountReturnsSuccess() = runTest {
         val result = addAccountUseCase.execute(TestUtil.VALID_ACCOUNT)
         assertSuccessResult(result, Unit)
     }
 
     @Test
-    fun `execute with invalid account secret returns validation error`() = runTest {
+    fun executeWithInvalidAccountSecretReturnsValidationError() = runTest {
         val invalidAccount = TestUtil.VALID_ACCOUNT.copy(secret = "INVALID")
         val result = addAccountUseCase.execute(invalidAccount)
         assertErrorResult(result, AccountValidationError.INVALID_SECRET)
     }
 
     @Test
-    fun `execute with valid account when repository fails returns unknown error`() = runTest {
+    fun executeWithValidAccountWhenRepositoryFailsReturnsUnknownError() = runTest {
         repository.forceNextOperationFailure()
         val result = addAccountUseCase.execute(TestUtil.VALID_ACCOUNT)
         assertErrorResult(result, Error.Unknown)
     }
 
     @Test
-    fun `execute multiple times with same valid account returns success each time`() = runTest {
+    fun executeMultipleTimesWithSameValidAccountReturnsSuccessEachTime() = runTest {
         repeat(3) {
             val result = addAccountUseCase.execute(TestUtil.VALID_ACCOUNT)
             assertSuccessResult(result, Unit)
