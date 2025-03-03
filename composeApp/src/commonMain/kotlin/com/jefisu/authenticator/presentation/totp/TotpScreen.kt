@@ -60,6 +60,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -83,6 +84,7 @@ import com.jefisu.authenticator.presentation.totp.components.FABItem
 import com.jefisu.authenticator.presentation.totp.components.SearchField
 import com.jefisu.authenticator.presentation.totp.components.SwipeableItemWithActions
 import com.jefisu.authenticator.presentation.totp.components.TotpCodeItem
+import com.jefisu.authenticator.presentation.util.TestTag
 import com.mohamedrejeb.calf.core.LocalPlatformContext
 import com.mohamedrejeb.calf.io.readByteArray
 import com.mohamedrejeb.calf.picker.FilePickerFileType
@@ -141,15 +143,18 @@ fun TotpScreenContent(
         listOf(
             FABItem(
                 iconRes = Res.drawable.ic_qr_code_scan,
-                onClick = { onAction(TotpAction.NavigateQrScanner) }
+                onClick = { onAction(TotpAction.NavigateQrScanner) },
+                modifier = Modifier.testTag(TestTag.QR_SCANNER_FAB)
             ),
             FABItem(
                 iconRes = Res.drawable.ic_pen_field,
-                onClick = { onAction(TotpAction.NavigateEnterKeyManually(accountId = null)) }
+                onClick = { onAction(TotpAction.NavigateEnterKeyManually(accountId = null)) },
+                modifier = Modifier.testTag(TestTag.ENTER_KEY_FAB)
             ),
             FABItem(
                 iconRes = Res.drawable.ic_search_image,
-                onClick = imagePicker::launch
+                onClick = imagePicker::launch,
+                modifier = Modifier.testTag(TestTag.SEARCH_IMAGE_FAB)
             )
         )
     }
@@ -236,10 +241,12 @@ private fun TotpTopAppBar(
         SearchField(
             query = state.searchQuery,
             onQueryChange = { onAction(TotpAction.SearchQueryChanged(it)) },
-            modifier = Modifier.animateEnterExit(
-                enter = slideInVertically() + fadeIn(),
-                exit = slideOutVertically() + fadeOut()
-            ),
+            modifier = Modifier
+                .animateEnterExit(
+                    enter = slideInVertically() + fadeIn(),
+                    exit = slideOutVertically() + fadeOut()
+                )
+                .testTag(TestTag.SEARCH_ICON),
             leadingIcon = {
                 IconButton(
                     onClick = { onAction(TotpAction.ToggleSearch) },
@@ -339,7 +346,7 @@ private fun TotpCodeList(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Edit,
-                            contentDescription = "Edit",
+                            contentDescription = "Edit account",
                             tint = LightOptCodeColor
                         )
                     }
@@ -352,7 +359,7 @@ private fun TotpCodeList(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Delete,
-                            contentDescription = "Delete",
+                            contentDescription = "Delete account",
                             tint = Color.Red
                         )
                     }

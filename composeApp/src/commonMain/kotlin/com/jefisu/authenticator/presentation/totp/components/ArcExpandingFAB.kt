@@ -20,9 +20,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.jefisu.authenticator.core.presentation.theme.colors
+import com.jefisu.authenticator.presentation.util.TestTag
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import kotlin.math.PI
@@ -85,6 +87,7 @@ fun ArcExpandingFAB(
                     shape = CircleShape,
                     modifier = Modifier
                         .offset { IntOffset(offset.x.toInt(), offset.y.toInt()) }
+                        .then(fabItem.modifier)
                 ) {
                     Icon(
                         painter = painterResource(fabItem.iconRes),
@@ -99,7 +102,9 @@ fun ArcExpandingFAB(
             onClick = onExpandToggle,
             containerColor = fabColor,
             shape = fabShape,
-            modifier = Modifier.align(Alignment.BottomEnd)
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .testTag(TestTag.ARC_EXPANDING_FAB)
         ) {
             content()
         }
@@ -135,5 +140,6 @@ private fun degreesToRadians(degrees: Float): Double {
 
 data class FABItem(
     val iconRes: DrawableResource,
-    val onClick: () -> Unit
+    val onClick: () -> Unit,
+    val modifier: Modifier = Modifier
 )

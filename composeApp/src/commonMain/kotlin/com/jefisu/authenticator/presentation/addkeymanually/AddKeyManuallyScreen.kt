@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -59,6 +60,7 @@ import com.jefisu.authenticator.domain.model.Algorithm
 import com.jefisu.authenticator.presentation.addkeymanually.components.ExpandableSettings
 import com.jefisu.authenticator.presentation.addkeymanually.components.PickerSheetList
 import com.jefisu.authenticator.presentation.addkeymanually.components.ServicePicker
+import com.jefisu.authenticator.presentation.util.TestTag
 import com.jefisu.authenticator.presentation.util.displayName
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -135,6 +137,7 @@ fun AddKeyManuallyScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
+                    .testTag(TestTag.NAME_TEXT_FIELD)
             )
             Spacer(Modifier.height(8.dp))
             AnimatedTextFieldHint(
@@ -147,6 +150,7 @@ fun AddKeyManuallyScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
+                    .testTag(TestTag.LOGIN_TEXT_FIELD)
             )
             Spacer(Modifier.height(8.dp))
             AnimatedTextFieldHint(
@@ -159,6 +163,7 @@ fun AddKeyManuallyScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
+                    .testTag(TestTag.SECRET_TEXT_FIELD)
             )
             Spacer(Modifier.height(24.dp))
             ServicePicker(
@@ -169,6 +174,7 @@ fun AddKeyManuallyScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
+                    .testTag(TestTag.ISSUER_PICKER)
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             ExpandableSettingsSection(
@@ -198,11 +204,12 @@ private fun AddKeyManuallyTopAppBar(
         actions = {
             IconButton(
                 onClick = onSave,
-                enabled = hasUnsavedChanges
+                enabled = hasUnsavedChanges,
+                modifier = Modifier.testTag(TestTag.SAVE_ACCOUNT_ICON)
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_save),
-                    contentDescription = "Save"
+                    contentDescription = "Save account",
                 )
             }
         },
@@ -241,7 +248,8 @@ private fun ExpandableSettingsSection(
             selectedItem = state.account.algorithm.displayName(),
             onSelectItem = {
                 onAction(AddKeyManuallyAction.AlgorithmChanged(Algorithm.valueOf(it)))
-            }
+            },
+            modifier = Modifier.testTag(TestTag.ALGORITHM_PICKER)
         )
         Spacer(Modifier.height(8.dp))
         PickerSheetList(
@@ -250,7 +258,8 @@ private fun ExpandableSettingsSection(
             selectedItem = "${state.account.refreshPeriod} $timeUnit",
             onSelectItem = { periodString ->
                 onAction(AddKeyManuallyAction.RefreshPeriodChanged(onlyDigits(periodString)))
-            }
+            },
+            modifier = Modifier.testTag(TestTag.REFRESH_PERIOD_PICKER)
         )
         Spacer(Modifier.height(8.dp))
         PickerSheetList(
@@ -259,7 +268,8 @@ private fun ExpandableSettingsSection(
             selectedItem = state.account.digitCount.toString(),
             onSelectItem = { digitsString ->
                 onAction(AddKeyManuallyAction.DigitsChanged(onlyDigits(digitsString)))
-            }
+            },
+            modifier = Modifier.testTag(TestTag.DIGIT_COUNT_PICKER)
         )
     }
 }

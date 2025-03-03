@@ -1,0 +1,27 @@
+package com.jefisu.authenticator.presentation.util
+
+object TestTag {
+    // TotpScreen
+    const val ARC_EXPANDING_FAB = "ARC_EXPANDING_FAB"
+    const val QR_SCANNER_FAB = "FAB_QR_SCANNER"
+    const val ENTER_KEY_FAB = "ENTER_KEY_FAB"
+    const val SEARCH_IMAGE_FAB = "FAB_SEARCH_IMAGE"
+    const val SEARCH_ICON = "SEARCH_FIELD"
+    const val SEARCH_TEXT_FIELD = "SEARCH_TEXT_FIELD"
+
+    // AddKeyManuallyScreen
+    const val NAME_TEXT_FIELD = "NAME_TEXT_FIELD"
+    const val LOGIN_TEXT_FIELD = "LOGIN_TEXT_FIELD"
+    const val SECRET_TEXT_FIELD = "SECRET_TEXT_FIELD"
+    const val ISSUER_PICKER = "ISSUER_PICKER"
+    const val ISSUER_TEXT_FIELD = "ISSUER_TEXT_FIELD"
+    const val EXPAND_SETTINGS_SWITCH = "EXPAND_SETTINGS_BUTTON"
+    const val ALGORITHM_PICKER = "ALGORITHM_PICKER"
+    const val REFRESH_PERIOD_PICKER = "REFRESH_PERIOD_PICKER"
+    const val DIGIT_COUNT_PICKER = "DIGIT_COUNT_PICKER"
+    const val PICKER_SHEET_LIST = "PICKER_SHEET_LIST"
+    const val PICKER_SHEET_LIST_CLOSE_BUTTON = "PICKER_SHEET_LIST_CLOSE_BUTTON"
+    const val ISSUER_LIST = "ISSUER_LIST"
+    const val SAVE_ACCOUNT_ICON = "SAVE_ACCOUNT_ICON"
+
+}

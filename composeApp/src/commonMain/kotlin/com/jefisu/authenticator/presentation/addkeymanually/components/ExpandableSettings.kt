@@ -18,10 +18,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jefisu.authenticator.core.presentation.components.Switch
 import com.jefisu.authenticator.core.presentation.theme.colors
+import com.jefisu.authenticator.presentation.util.TestTag
 
 @Composable
 fun ExpandableSettings(
@@ -47,7 +49,8 @@ fun ExpandableSettings(
             )
             Switch(
                 checked = expanded,
-                onCheckedChange = { onExpandToggle() }
+                onCheckedChange = { onExpandToggle() },
+                modifier = Modifier.testTag(TestTag.EXPAND_SETTINGS_SWITCH)
             )
         }
         Spacer(Modifier.height(8.dp))
