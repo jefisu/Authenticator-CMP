@@ -1,4 +1,3 @@
-import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -159,11 +158,10 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
-tasks.build.dependsOn("kspCommonMainMetadata")
-
 tasks.matching {
-    it.name != "kspCommonMainKotlinMetadata" &&
-            (it is KotlinCompile || it is KotlinNativeCompile)
+    val isKotlinCompileTask = it is KotlinCompile || it is KotlinNativeCompile
+    val isKtlintTask = it.name.contains("runKtlint")
+    isKotlinCompileTask || isKtlintTask
 }.configureEach {
     dependsOn("kspCommonMainKotlinMetadata")
 }
