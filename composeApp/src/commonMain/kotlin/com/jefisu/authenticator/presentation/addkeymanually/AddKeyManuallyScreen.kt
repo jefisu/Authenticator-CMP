@@ -198,8 +198,11 @@ private fun AddKeyManuallyTopAppBar(
         title = {
             Text(
                 text = stringResource(
-                    if (isEditMode) Res.string.edit_account
-                    else Res.string.new_account
+                    if (isEditMode) {
+                        Res.string.edit_account
+                    } else {
+                        Res.string.new_account
+                    }
                 )
             )
         },
@@ -219,7 +222,7 @@ private fun AddKeyManuallyTopAppBar(
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_save),
-                    contentDescription = "Save account",
+                    contentDescription = "Save account"
                 )
             }
         },

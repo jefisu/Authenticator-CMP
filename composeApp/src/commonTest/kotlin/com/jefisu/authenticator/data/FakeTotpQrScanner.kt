@@ -7,7 +7,7 @@ class FakeTotpQrScanner : TotpQrScanner {
     private var uri: String? = null
 
     fun shouldReturn(newUri: String?) {
-       uri = newUri
+        uri = newUri
     }
 
     override suspend fun extractTotpUri(imageBytes: ByteArray): String? {
