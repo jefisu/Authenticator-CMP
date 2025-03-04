@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import authenticator.composeapp.generated.resources.Res
@@ -56,6 +57,7 @@ import com.jefisu.authenticator.core.presentation.components.AnimatedTextFieldHi
 import com.jefisu.authenticator.core.presentation.components.BottomSheet
 import com.jefisu.authenticator.core.presentation.theme.colors
 import com.jefisu.authenticator.domain.model.Issuer
+import com.jefisu.authenticator.presentation.util.TestTag
 import com.jefisu.authenticator.presentation.util.getLogoUrl
 import com.jefisu.authenticator.presentation.util.url
 import kotlinx.coroutines.flow.collectLatest
@@ -93,6 +95,7 @@ fun ServicePicker(
                     modifier = Modifier
                         .padding(top = 12.dp)
                         .padding(horizontal = 16.dp)
+                        .testTag(TestTag.ISSUER_TEXT_FIELD)
                 )
                 ServicesGrid(
                     searchText = searchText,
@@ -153,7 +156,9 @@ private fun ServicesGrid(
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.animateContentSize()
+        modifier = Modifier
+            .animateContentSize()
+            .testTag(TestTag.ISSUER_LIST)
     ) {
         items(searchResultIssuers) { issuer ->
             ServiceGridItem(

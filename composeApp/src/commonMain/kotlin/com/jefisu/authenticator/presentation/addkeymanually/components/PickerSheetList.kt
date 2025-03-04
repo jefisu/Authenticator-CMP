@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ import com.composables.core.SheetDetent
 import com.composables.core.rememberModalBottomSheetState
 import com.jefisu.authenticator.core.presentation.components.BottomSheet
 import com.jefisu.authenticator.core.presentation.theme.colors
+import com.jefisu.authenticator.presentation.util.TestTag
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -75,27 +77,39 @@ fun PickerSheetList(
 private fun PickerSheetContent(
     items: List<String>,
     onSelectItem: (String) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column {
-        items.forEach { item ->
-            PickerItem(
-                text = item,
-                onClick = { onSelectItem(item) }
-            )
-            if (item != items.last()) {
-                HorizontalDivider(
-                    color = MaterialTheme.colors.textColor.copy(alpha = .1f)
+    val dividerColor = MaterialTheme.colors.textColor.copy(alpha = .1f)
+    Column(
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier.testTag(TestTag.PICKER_SHEET_LIST)
+        ) {
+            items.forEach { item ->
+                PickerItem(
+                    text = item,
+                    onClick = { onSelectItem(item) },
+                    decoration = { content ->
+                        Column {
+                            content()
+                            if (item != items.last()) {
+                                HorizontalDivider(color = dividerColor)
+                            }
+                        }
+                    }
                 )
             }
         }
         HorizontalDivider(
-            color = MaterialTheme.colors.textColor.copy(alpha = .1f),
+            color = dividerColor,
             thickness = 8.dp
         )
         PickerItem(
             text = stringResource(Res.string.cancel),
-            onClick = onCancel
+            onClick = onCancel,
+            modifier = Modifier.testTag(TestTag.PICKER_SHEET_LIST_CLOSE_BUTTON)
         )
     }
 }
@@ -103,20 +117,25 @@ private fun PickerSheetContent(
 @Composable
 private fun PickerItem(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    decoration: @Composable (@Composable () -> Unit) -> Unit = {}
 ) {
-    Surface(
-        onClick = onClick,
-        contentColor = MaterialTheme.colors.textColor
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-        )
+    decoration {
+        Surface(
+            onClick = onClick,
+            contentColor = MaterialTheme.colors.textColor,
+            modifier = modifier
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+            )
+        }
     }
 }
 

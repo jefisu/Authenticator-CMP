@@ -33,10 +33,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import authenticator.composeapp.generated.resources.Res
 import authenticator.composeapp.generated.resources.search_hint
 import com.jefisu.authenticator.core.presentation.theme.colors
+import com.jefisu.authenticator.presentation.util.TestTag
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -85,7 +87,9 @@ fun SearchField(
                 BasicTextField(
                     value = query,
                     onValueChange = onQueryChange,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(TestTag.SEARCH_TEXT_FIELD),
                     textStyle = textStyle.copy(color = textColor),
                     cursorBrush = SolidColor(textColor),
                     decorationBox = { innerTextField ->

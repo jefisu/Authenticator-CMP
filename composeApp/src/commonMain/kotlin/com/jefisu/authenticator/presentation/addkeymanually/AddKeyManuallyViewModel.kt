@@ -156,7 +156,10 @@ class AddKeyManuallyViewModel(
 
                 account?.let {
                     _storedAccount = it
-                    _state.updateCopy { AddKeyManuallyState.account set it }
+                    _state.updateCopy {
+                        AddKeyManuallyState.account set it
+                        AddKeyManuallyState.isEditMode set true
+                    }
                     configDiffDetected()
                 }
             }
