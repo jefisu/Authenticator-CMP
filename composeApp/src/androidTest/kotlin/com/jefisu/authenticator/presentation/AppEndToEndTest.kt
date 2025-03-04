@@ -5,10 +5,13 @@ package com.jefisu.authenticator.presentation
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -18,12 +21,14 @@ import com.jefisu.authenticator.core.presentation.navigation.AppNavHost
 import com.jefisu.authenticator.di.sharedModule
 import com.jefisu.authenticator.di.testModule
 import com.jefisu.authenticator.domain.model.Algorithm
+import com.jefisu.authenticator.domain.repository.AccountRepository
 import com.jefisu.authenticator.presentation.util.TestTag
 import com.jefisu.authenticator.util.TestUtil
+import kotlinx.coroutines.test.runTest
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
-import kotlin.test.AfterTest
+import org.koin.test.inject
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
@@ -35,11 +40,6 @@ class AppEndToEndTest : KoinTest {
         startKoin {
             modules(sharedModule, testModule)
         }
-    }
-
-    @AfterTest
-    fun tearDown() {
-        stopKoin()
     }
 
     @Test
@@ -98,5 +98,35 @@ class AppEndToEndTest : KoinTest {
 
         /* Check that the account was saved */
         onNodeWithText(account.login).assertExists()
+    }
+
+    @Test
+    fun searchAccounts() = runComposeUiTest {
+        setContent {
+            AppNavHost()
+        }
+
+        /* Add 10 accounts */
+        runTest {
+            val repository by inject<AccountRepository>()
+            (1..10).forEach {
+                repository.addAccount(
+                    TestUtil.VALID_ACCOUNT.copy(login = "login_$it")
+                )
+            }
+        }
+
+        /* Open the search bar */
+        onNodeWithContentDescription("Search").performClick()
+
+        /* Search for an account */
+        val query = "login_1"
+        onNodeWithTag(TestTag.SEARCH_TEXT_FIELD).performTextInput(query)
+
+        /* Check that the account was found */
+        onAllNodesWithText(query)
+            .assertCountEquals(2)
+            .onFirst()
+            .assertTextContains(query)
     }
 }
