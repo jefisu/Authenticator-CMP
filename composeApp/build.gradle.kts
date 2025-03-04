@@ -3,6 +3,8 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -158,3 +160,10 @@ room {
 }
 
 tasks.build.dependsOn("kspCommonMainMetadata")
+
+tasks.matching {
+    it.name != "kspCommonMainKotlinMetadata" &&
+            (it is KotlinCompile || it is KotlinNativeCompile)
+}.configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
+}
