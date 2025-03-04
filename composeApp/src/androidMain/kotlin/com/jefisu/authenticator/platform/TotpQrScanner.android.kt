@@ -8,8 +8,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 
-actual class TotpQrScanner {
-    actual suspend fun extractTotpUri(imageBytes: ByteArray): String? {
+actual class TotpQrScannerImpl : TotpQrScanner {
+    actual override suspend fun extractTotpUri(imageBytes: ByteArray): String? {
         return withContext(Dispatchers.IO) {
             val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                 ?: return@withContext null

@@ -89,6 +89,9 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
             implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.koin.test)
+            implementation(libs.truthish)
+            implementation(libs.turbine)
         }
     }
 }

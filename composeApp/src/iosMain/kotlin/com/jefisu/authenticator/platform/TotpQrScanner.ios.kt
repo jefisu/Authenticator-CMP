@@ -17,8 +17,8 @@ import platform.UIKit.UIImage
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-actual class TotpQrScanner {
-    actual suspend fun extractTotpUri(imageBytes: ByteArray): String? {
+actual class TotpQrScannerImpl : TotpQrScanner {
+    actual override suspend fun extractTotpUri(imageBytes: ByteArray): String? {
         return suspendCoroutine { continuation ->
             val uiImage = UIImage.imageWithData(imageBytes.toNSData()) ?: run {
                 continuation.resume(null)

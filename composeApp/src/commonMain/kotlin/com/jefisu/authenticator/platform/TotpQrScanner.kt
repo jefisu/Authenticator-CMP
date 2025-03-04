@@ -1,7 +1,9 @@
 package com.jefisu.authenticator.platform
 
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-expect class TotpQrScanner() {
-
+interface TotpQrScanner {
     suspend fun extractTotpUri(imageBytes: ByteArray): String?
+}
+
+expect class TotpQrScannerImpl() : TotpQrScanner {
+    override suspend fun extractTotpUri(imageBytes: ByteArray): String?
 }
