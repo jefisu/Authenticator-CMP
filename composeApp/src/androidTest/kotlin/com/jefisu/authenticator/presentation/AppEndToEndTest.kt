@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertCountEquals
-import androidx.compose.ui.test.assertHasClickAction
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
@@ -17,6 +17,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.runComposeUiTest
@@ -93,7 +94,7 @@ class AppEndToEndTest : KoinTest {
 
         /* Save the account */
         onNodeWithTag(TestTag.SAVE_ACCOUNT_ICON)
-            .assertHasClickAction()
+            .assertIsEnabled()
             .performClick()
 
         /* Check that the account was saved */
@@ -138,6 +139,38 @@ class AppEndToEndTest : KoinTest {
 
         /* Check that the account was deleted */
         onNodeWithText(accountLogin).assertDoesNotExist()
+    }
+
+    @Test
+    fun editAccount() = runComposeTest(
+        configure = {
+            addAccounts(1)
+        }
+    ) {
+        val accountLogin = "login_1"
+
+        /* Swipe to the left to show the edit button */
+        onNodeWithText(accountLogin).performTouchInput {
+            swipeLeft()
+        }
+
+        /* Click the edit button */
+        onNodeWithContentDescription("Edit account").performClick()
+
+        /* Edit the login */
+        val editedAccountLogin = "$accountLogin edited"
+        onNodeWithTag(TestTag.LOGIN_TEXT_FIELD).apply {
+            performTextClearance()
+            performTextInput(editedAccountLogin)
+        }
+
+        /* Save the account edits */
+        onNodeWithTag(TestTag.SAVE_ACCOUNT_ICON)
+            .assertIsEnabled()
+            .performClick()
+
+        /* Check that the account was edited */
+        onNodeWithText(editedAccountLogin).assertExists()
     }
 
     private fun runComposeTest(
