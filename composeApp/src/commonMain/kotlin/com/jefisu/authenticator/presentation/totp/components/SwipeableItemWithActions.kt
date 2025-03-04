@@ -71,7 +71,9 @@ fun SwipeableItemWithActions(
         }
 
     LaunchedEffect(isRevealed) {
-        offset.animateTo(0f)
+        if (!isRevealed) {
+            offset.animateTo(0f)
+        }
     }
 
     Box(
