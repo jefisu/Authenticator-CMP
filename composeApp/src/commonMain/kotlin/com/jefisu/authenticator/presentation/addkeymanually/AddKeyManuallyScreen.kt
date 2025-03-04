@@ -43,6 +43,7 @@ import authenticator.composeapp.generated.resources.account_name
 import authenticator.composeapp.generated.resources.algorithm
 import authenticator.composeapp.generated.resources.change_standard_settings
 import authenticator.composeapp.generated.resources.digits
+import authenticator.composeapp.generated.resources.edit_account
 import authenticator.composeapp.generated.resources.ic_save
 import authenticator.composeapp.generated.resources.login
 import authenticator.composeapp.generated.resources.new_account
@@ -111,6 +112,7 @@ fun AddKeyManuallyScreenContent(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             AddKeyManuallyTopAppBar(
+                isEditMode = state.isEditMode,
                 hasUnsavedChanges = state.unsavedChanges,
                 onNavigateBack = { onAction(AddKeyManuallyAction.NavigateBack) },
                 onSave = { onAction(AddKeyManuallyAction.Save) }
@@ -187,12 +189,20 @@ fun AddKeyManuallyScreenContent(
 
 @Composable
 private fun AddKeyManuallyTopAppBar(
+    isEditMode: Boolean,
     hasUnsavedChanges: Boolean,
     onNavigateBack: () -> Unit,
     onSave: () -> Unit
 ) {
     TopAppBar(
-        title = { Text(stringResource(Res.string.new_account)) },
+        title = {
+            Text(
+                text = stringResource(
+                    if (isEditMode) Res.string.edit_account
+                    else Res.string.new_account
+                )
+            )
+        },
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {
                 Icon(
