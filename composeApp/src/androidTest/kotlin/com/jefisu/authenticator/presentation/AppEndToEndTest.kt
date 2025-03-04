@@ -2,6 +2,8 @@
 
 package com.jefisu.authenticator.presentation
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
@@ -16,7 +18,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.runComposeUiTest
+import androidx.compose.ui.test.swipeLeft
 import com.jefisu.authenticator.core.presentation.navigation.AppNavHost
 import com.jefisu.authenticator.di.sharedModule
 import com.jefisu.authenticator.di.testModule
@@ -43,11 +47,7 @@ class AppEndToEndTest : KoinTest {
     }
 
     @Test
-    fun saveNewAccount() = runComposeUiTest {
-        setContent {
-            AppNavHost()
-        }
-
+    fun saveNewAccount() = runComposeTest {
         val account = TestUtil.VALID_ACCOUNT
 
         /* Navigate to AddKeyManuallyScreen */
@@ -101,21 +101,11 @@ class AppEndToEndTest : KoinTest {
     }
 
     @Test
-    fun searchAccounts() = runComposeUiTest {
-        setContent {
-            AppNavHost()
+    fun searchAccounts() = runComposeTest(
+        configure = {
+            addAccounts(10)
         }
-
-        /* Add 10 accounts */
-        runTest {
-            val repository by inject<AccountRepository>()
-            (1..10).forEach {
-                repository.addAccount(
-                    TestUtil.VALID_ACCOUNT.copy(login = "login_$it")
-                )
-            }
-        }
-
+    ) {
         /* Open the search bar */
         onNodeWithContentDescription("Search").performClick()
 
@@ -128,5 +118,47 @@ class AppEndToEndTest : KoinTest {
             .assertCountEquals(2)
             .onFirst()
             .assertTextContains(query)
+    }
+
+    @Test
+    fun deleteAccount() = runComposeTest(
+        configure = {
+            addAccounts(1)
+        }
+    ) {
+        val accountLogin = "login_1"
+
+        /* Swipe to the left to show the delete button */
+        onNodeWithText(accountLogin).performTouchInput {
+            swipeLeft()
+        }
+
+        /* Click the delete button */
+        onNodeWithContentDescription("Delete account").performClick()
+
+        /* Check that the account was deleted */
+        onNodeWithText(accountLogin).assertDoesNotExist()
+    }
+
+    private fun runComposeTest(
+        configure: (() -> Unit)? = null,
+        content: @Composable () -> Unit = { AppNavHost() },
+        block: ComposeUiTest.() -> Unit
+    ) = runComposeUiTest {
+        configure?.invoke()
+
+        setContent {
+            content()
+        }
+
+        block()
+    }
+
+    private fun addAccounts(times: Int) = runTest {
+        val repository by inject<AccountRepository>()
+        repeat(times) {
+            val account = TestUtil.VALID_ACCOUNT.copy(login = "login_${it + 1}")
+            repository.addAccount(account)
+        }
     }
 }
