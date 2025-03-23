@@ -28,4 +28,6 @@ dependencyResolutionManagement {
     }
 }
 
+includeBuild("build-logic")
+
 include(":composeApp")
