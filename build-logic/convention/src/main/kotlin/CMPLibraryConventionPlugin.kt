@@ -1,9 +1,7 @@
 import ext.getPluginId
-import ext.implementation
 import ext.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.dependencies
 
 class CMPLibraryConventionPlugin : Plugin<Project> {
 
@@ -11,11 +9,8 @@ class CMPLibraryConventionPlugin : Plugin<Project> {
         with(pluginManager) {
             apply(libs.getPluginId("auth-androidLibrary"))
             apply(libs.getPluginId("auth-composeMultiplatform"))
+            apply(libs.getPluginId("auth-kmp-library"))
             apply(libs.getPluginId("auth-coil"))
-        }
-
-        dependencies {
-            implementation(project(":core:presentation:ui"))
         }
     }
 }
